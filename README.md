@@ -20,9 +20,9 @@ elegir una cantidad de los mismos, elegir su forma de pago y por ultimo confirma
 La documentación del progreso se actualizará aquí cada semana.  
 
 ### Semana 1 (6/10/2025 - 12/10/2025)
-- Creación del repositorio en GitHub.  
 - Configuración inicial del README.md.
-- Creación del Diagrama E-R inicial.
-- Configuración inicial de la base de datos. 
+- Creación de la base de datos.
+- Creación de la carpeta database en Github
+- Creación del README.md de la carpeta database con instrucciones de la base de datos.
 
 ### Semana 2 (13/10/2025 - 19/10/2025)
