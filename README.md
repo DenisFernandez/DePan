@@ -56,3 +56,34 @@ Semana 3 (13/10/2025 - 19/10/2025) - PRÓXIMOS PASOS
     🔄 Desarrollo del CRUD de productos
 
     🔄 Creación del catálogo de productos
+
+## 🚀 Instalación y Ejecución
+# Clonar el repositorio
+git clone https://github.com/DenisFernandez/DePan.git
+
+# Navegar al directorio
+cd DePan
+
+# Restaurar paquetes NuGet
+dotnet restore
+
+# Compilar el proyecto
+dotnet build
+
+# Ejecutar la aplicación
+dotnet run
+
+## 📊 Base de Datos
+
+    Nombre: depan_bd
+
+    Gestor: MySQL 8.4 LTS
+
+    Conexión: Configurada en appsettings.json
+
+    Modelos: Generados automáticamente via Entity Framework Scaffolding
+    
+##📞 Contacto: denisfernandezcastro12@gmail.com
+##🔗 Repositorio: https://github.com/DenisFernandez/DePan
+
+    
