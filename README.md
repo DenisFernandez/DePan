@@ -83,7 +83,7 @@ dotnet run
 
     Modelos: Generados automáticamente via Entity Framework Scaffolding
     
-##📞 Contacto: denisfernandezcastro12@gmail.com
-##🔗 Repositorio: https://github.com/DenisFernandez/DePan
+## 📞 Contacto: denisfernandezcastro12@gmail.com
+## 🔗 Repositorio: https://github.com/DenisFernandez/DePan
 
     
