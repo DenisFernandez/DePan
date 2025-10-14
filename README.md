@@ -12,7 +12,7 @@ elegir una cantidad de los mismos, elegir su forma de pago y por ultimo confirma
 
 ## 🛠️ Tecnologías
 - Lenguaje: C#
-- IDE: Visual Studio 2022
+- IDE: Visual Studio Code (Cambio de Visual Studio 2022 a VSC por comodidad. Es el IDE al que estoy más acostumbrado y el que estoy utilizando actualmente en las prácticas.)
 - Framework : .NET 8
 - Control de versiones: Git + GitHub
 
