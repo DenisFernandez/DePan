@@ -48,6 +48,13 @@ Semana 2 (06/10/2025 - 12/10/2025)
     ✅ Organización y subida del código a GitHub
     
     ℹ️ (Cambio de Visual Studio 2022 a VSC por comodidad. Es el IDE al que estoy más acostumbrado y el que estoy utilizando actualmente en las prácticas.)
+    
+    ℹ️ Uso de la librería Pomelo.EntityFrameworkCore.MySql
+      Explicación:
+        La uso para conectar la aplicación ASP.NET Core con la base de datos (depan_db) y trabajar con ella mediante LINQ.
+        La librería también me traduce las consultas LINQ de C# a SQL para MySQL, me permite crear migraciones y realizar scaffolding de los modelos de la base de datos, 
+        para generar automáticamente las clases del modelo de datos (dentro de la carpeta ModelsDB) y el contexto (DepanDbContext) de la estructura de los mismos.
+        
 
 Semana 3 (13/10/2025 - 19/10/2025) - PRÓXIMOS PASOS
 
