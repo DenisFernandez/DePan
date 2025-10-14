@@ -12,7 +12,7 @@ elegir una cantidad de los mismos, elegir su forma de pago y por ultimo confirma
 
 ## 🛠️ Tecnologías
 - Lenguaje: C#
-- IDE: Visual Studio Code (Cambio de Visual Studio 2022 a VSC por comodidad. Es el IDE al que estoy más acostumbrado y el que estoy utilizando actualmente en las prácticas.)
+- IDE: Visual Studio Code 
 - Framework : .NET 8
 - Control de versiones: Git + GitHub
 
@@ -46,6 +46,8 @@ Semana 2 (06/10/2025 - 12/10/2025)
     ✅ Conexión exitosa a la base de datos depan_db
 
     ✅ Organización y subida del código a GitHub
+    
+    ℹ️ (Cambio de Visual Studio 2022 a VSC por comodidad. Es el IDE al que estoy más acostumbrado y el que estoy utilizando actualmente en las prácticas.)
 
 Semana 3 (13/10/2025 - 19/10/2025) - PRÓXIMOS PASOS
 
