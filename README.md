@@ -14,7 +14,7 @@ elegir una cantidad de los mismos, elegir su forma de pago y por ultimo confirma
 - Lenguaje: C#
 - IDE: Visual Studio Code 
 - Framework : .NET 8
-- Control de versiones: Git + GitHub
+- Control de versiones: Git + GitHub y GitHubDesktop
 
 ## 📅 Progreso Semanal
 Semana 1 (29/09/2025 - 05/10/2025)
@@ -56,15 +56,32 @@ Semana 2 (06/10/2025 - 12/10/2025)
         para generar automáticamente las clases del modelo de datos (dentro de la carpeta ModelsDB) y el contexto (DepanDbContext) de la estructura de los mismos.
         
 
-Semana 3 (13/10/2025 - 19/10/2025) - PRÓXIMOS PASOS
+Semana 3 (13/10/2025 - 19/10/2025)
 
-    🔄 Implementación del sistema de registro y login
+✅ Vistas para registro, login y bienvenida creadas y configuradas correctamente.
 
-    🔄 Configuración de autenticación JWT
+#Sistema de Autenticación JWT Completo
 
-    🔄 Desarrollo del CRUD de productos
+Modelos de Autenticación:
 
-    🔄 Creación del catálogo de productos
+✅ LoginModel - Validación de credenciales
+✅ RegisterModel - Registro de nuevos usuarios
+
+✅ Generación de tokens seguros
+✅ Configuración de claims personalizados
+
+✅ Endpoints para Login, Register y Logout
+✅ Hash seguro de contraseñas con SHA256
+
+✅ Validación de usuarios existentes
+✅ Página de Login con validación
+✅ Página de Registro con formulario completo
+
+Configuración de Seguridad:
+
+✅ Autenticación JWT configurada
+✅ Clave secreta segura para tokens JWT
+✅ Cookies HTTP-only para almacenamiento seguro añadidas
 
 ## 🚀 Instalación y Ejecución
 # Clonar el repositorio
@@ -89,8 +106,6 @@ dotnet run
     Gestor: MySQL 8.4 LTS
 
     Conexión: Configurada en appsettings.json
-
-    Modelos: Generados automáticamente via Entity Framework Scaffolding
     
 ## 📞 Contacto: denisfernandezcastro12@gmail.com
 ## 🔗 Repositorio: https://github.com/DenisFernandez/DePan
