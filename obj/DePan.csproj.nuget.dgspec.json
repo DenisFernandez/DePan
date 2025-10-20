@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Denis\\Desktop\\Denis TFG\\DePan\\DePan.csproj": {}
+    "D:\\Denis\\Escritorio\\Denis TFG\\DePan\\DePan.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Denis\\Desktop\\Denis TFG\\DePan\\DePan.csproj": {
+    "D:\\Denis\\Escritorio\\Denis TFG\\DePan\\DePan.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Denis\\Desktop\\Denis TFG\\DePan\\DePan.csproj",
+        "projectUniqueName": "D:\\Denis\\Escritorio\\Denis TFG\\DePan\\DePan.csproj",
         "projectName": "DePan",
-        "projectPath": "C:\\Users\\Denis\\Desktop\\Denis TFG\\DePan\\DePan.csproj",
-        "packagesPath": "C:\\Users\\Denis\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Denis\\Desktop\\Denis TFG\\DePan\\obj\\",
+        "projectPath": "D:\\Denis\\Escritorio\\Denis TFG\\DePan\\DePan.csproj",
+        "packagesPath": "C:\\Users\\denis\\.nuget\\packages\\",
+        "outputPath": "D:\\Denis\\Escritorio\\Denis TFG\\DePan\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Denis\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\denis\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -32,11 +32,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -45,27 +40,39 @@
           "dependencies": {
             "AutoMapper.Extensions.Microsoft.DependencyInjection": {
               "target": "Package",
-              "version": "[12.0.1, )"
+              "version": "[12.0.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.10, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.10, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.0, )"
+              "version": "[8.0.10, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.0, )"
+              "version": "[8.0.10, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.0, )"
+              "version": "[8.0.10, )"
             },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
-              "version": "[8.0.0, )"
+              "version": "[8.0.2, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.0.1, )"
             }
           },
           "imports": [
@@ -87,7 +94,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.408/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.121/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

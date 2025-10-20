@@ -1,8 +1,33 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio - DePan";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Bienvenido a DePan</h1>
+    <p>Tu sistema de gestión para panaderías</p>
+    
+    @if (Context.Request.Cookies["jwt"] != null)
+    {
+        <div class="alert alert-success">
+            <h4>¡Has iniciado sesión!</h4>
+            <p>Bienvenido de vuelta a DePan.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Accede a tu cuenta</h5>
+                        <p class="card-text">Inicia sesión o regístrate para comenzar a usar DePan.</p>
+                        <div class="d-grid gap-2">
+                            <a href="@Url.Action("Login", "Auth")" class="btn btn-primary">Iniciar Sesión</a>
+                            <a href="@Url.Action("Register", "Auth")" class="btn btn-outline-primary">Registrarse</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>

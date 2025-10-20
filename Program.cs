@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using DePan.Data;
+using DePan.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +15,29 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// AutoMapper
+// Configurar JWT
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "DefaultSecretKeyForDevelopment12345"))
+        };
+    });
+
+// Registrar servicios
+builder.Services.AddScoped<JwtService>();
 builder.Services.AddAutoMapper(typeof(Program));
+
+// Configurar autorización
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -28,6 +53,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// IMPORTANTE: Agregar autenticación y autorización
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
