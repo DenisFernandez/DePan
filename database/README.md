@@ -6,7 +6,8 @@ Base de datos relacional diseñada para gestionar una panadería online con sist
 
 ## 📊 Diagrama Entidad-Relación
 
-![Diagrama ER](diagrama-er.png)
+<img width="1222" height="546" alt="er_depandb drawio" src="https://github.com/user-attachments/assets/5e54b455-2f58-4400-ba55-92ddf24295da" />
+
 
 ## 🏗️ Estructura de la Base de Datos
 
