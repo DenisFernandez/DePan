@@ -58,30 +58,30 @@ Semana 2 (06/10/2025 - 12/10/2025)
 
 Semana 3 (13/10/2025 - 19/10/2025)
 
-✅ Vistas para registro, login y bienvenida creadas y configuradas correctamente.
-
-#Sistema de Autenticación JWT Completo
-
-Modelos de Autenticación:
-
-✅ LoginModel - Validación de credenciales
-✅ RegisterModel - Registro de nuevos usuarios
-
-✅ Generación de tokens seguros
-✅ Configuración de claims personalizados
-
-✅ Endpoints para Login, Register y Logout
-✅ Hash seguro de contraseñas con SHA256
-
-✅ Validación de usuarios existentes
-✅ Página de Login con validación
-✅ Página de Registro con formulario completo
-
-Configuración de Seguridad:
-
-✅ Autenticación JWT configurada
-✅ Clave secreta segura para tokens JWT
-✅ Cookies HTTP-only para almacenamiento seguro añadidas
+    ✅ Vistas para registro, login y bienvenida creadas y configuradas correctamente.
+    
+    #Sistema de Autenticación JWT Completo
+    
+    Modelos de Autenticación:
+    
+    ✅ LoginModel - Validación de credenciales
+    ✅ RegisterModel - Registro de nuevos usuarios
+    
+    ✅ Generación de tokens seguros
+    ✅ Configuración de claims personalizados
+    
+    ✅ Endpoints para Login, Register y Logout
+    ✅ Hash seguro de contraseñas con SHA256
+    
+    ✅ Validación de usuarios existentes
+    ✅ Página de Login con validación
+    ✅ Página de Registro con formulario completo
+    
+    Configuración de Seguridad:
+    
+    ✅ Autenticación JWT configurada
+    ✅ Clave secreta segura para tokens JWT
+    ✅ Cookies HTTP-only para almacenamiento seguro añadidas
 
 ## 🚀 Instalación y Ejecución
 # Clonar el repositorio
