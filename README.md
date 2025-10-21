@@ -14,7 +14,8 @@ elegir una cantidad de los mismos, elegir su forma de pago y por ultimo confirma
 - Lenguaje: C#
 - IDE: Visual Studio Code 
 - Framework : .NET 8
-- Control de versiones: Git + GitHub y GitHubDesktop
+- Control de versiones: Git + GitHub y GitHubDesktop 
+ℹ️ Recientemente empecé a utilizar GitHubDesktop, facilita mucho los commits y los push, es una herramienta muy cómoda e intuitiva.
 
 ## 📅 Progreso Semanal
 Semana 1 (29/09/2025 - 05/10/2025)
