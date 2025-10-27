@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "D:\\Denis\\Escritorio\\Denis TFG\\DePan\\wwwroot\\images\\placeholder.txt",
+      "PackagePath": "staticwebassets\\images\\placeholder.txt"
+    },
+    {
       "Id": "D:\\Denis\\Escritorio\\Denis TFG\\DePan\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },

@@ -34,6 +34,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // Registrar servicios
 builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<ProductoService>();
 builder.Services.AddAutoMapper(typeof(Program));
 
 // Configurar autorización
@@ -48,9 +49,10 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
+// Comentado temporalmente para desarrollo - sin HTTPS
+// app.UseHttpsRedirection();
 
+app.UseStaticFiles();
 app.UseRouting();
 
 // IMPORTANTE: Agregar autenticación y autorización

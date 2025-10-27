@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "c1HkDJxOSOied0RzLqnuuOXG4jysjcjJ1FFkkxSuEWY=",
+  "Hash": "BnCiBSYxPc3sWI/qvyRYAeWcF17p0lRdBWxjMDjfHe0=",
   "Source": "DePan",
   "BasePath": "_content/DePan",
   "Mode": "Default",
@@ -91,6 +91,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "D:\\Denis\\Escritorio\\Denis TFG\\DePan\\wwwroot\\images\\placeholder.txt",
+      "SourceId": "DePan",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Denis\\Escritorio\\Denis TFG\\DePan\\wwwroot\\",
+      "BasePath": "_content/DePan",
+      "RelativePath": "images/placeholder.txt",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\placeholder.txt"
     },
     {
       "Identity": "D:\\Denis\\Escritorio\\Denis TFG\\DePan\\wwwroot\\js\\site.js",
