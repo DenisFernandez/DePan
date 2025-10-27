@@ -83,6 +83,25 @@ Semana 3 (13/10/2025 - 19/10/2025)
     ✅ Autenticación JWT configurada
     ✅ Clave secreta segura para tokens JWT
     ✅ Cookies HTTP-only para almacenamiento seguro añadidas
+    
+Semana 4 (20/10/2025 - 27/10/2025)
+
+    ✅ Implementación de Entidades con LINQ
+    Servicio ProductoService con operaciones CRUD completas.
+    Consultas LINQ para, obtener productos y categorías, filtrar por categoría y disponibilidad, nombre y descripción.
+    
+    ✅ Sistema Completo de Catálogo de Productos
+    Vista Index: Catálogo público con filtros por categoría y búsqueda
+    Vista Details: Página de detalles individuales de productos
+    
+    ✅ CRUD de Productos para Administradores
+    Panel de Administración (Admin): Vista completa de todos los productos
+    Protección por roles: Accesible para usuarios "Administrador" y "administrador"
+    Crear, eliminar y editar productos.
+    
+    ✅ Resolución de Problemas de Autenticación
+    Solución de problemas de roles (mayúsculas/minúsculas).
+    Configuración correcta de cookies JWT.
 
 ## 🚀 Instalación y Ejecución
 # Clonar el repositorio
