@@ -53,7 +53,7 @@ namespace DePan.Controllers
         // ========== SECCIÓN ADMINISTRADOR ==========
         
         // GET: /Productos/Admin
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador,administrador")]
         public async Task<IActionResult> Admin()
         {
             var productos = await _productoService.GetAllProductosAsync();
@@ -61,7 +61,7 @@ namespace DePan.Controllers
         }
 
         // GET: /Productos/Create
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador,administrador")]
         public async Task<IActionResult> Create()
         {
             var categorias = await _productoService.GetCategoriasAsync();
@@ -75,7 +75,7 @@ namespace DePan.Controllers
         // POST: /Productos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador,administrador")]
         public async Task<IActionResult> Create(ProductoViewModel model)
         {
             if (ModelState.IsValid)
@@ -105,7 +105,7 @@ namespace DePan.Controllers
         }
 
         // GET: /Productos/Edit/5
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador,administrador")]
         public async Task<IActionResult> Edit(int id)
         {
             var producto = await _productoService.GetProductoByIdAsync(id);
@@ -135,7 +135,7 @@ namespace DePan.Controllers
         // POST: /Productos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador,administrador")]
         public async Task<IActionResult> Edit(int id, ProductoViewModel model)
         {
             if (id != model.IdProducto)
@@ -175,7 +175,7 @@ namespace DePan.Controllers
         // POST: /Productos/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador,administrador")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _productoService.DeleteProductoAsync(id);
