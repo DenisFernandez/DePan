@@ -103,6 +103,25 @@ Semana 4 (20/10/2025 - 27/10/2025)
     Solución de problemas de roles (mayúsculas/minúsculas).
     Configuración correcta de cookies JWT.
 
+Semana 5 (28/10/2025 - 04/10/2025)
+
+     ✅ Implementación del carrito de Compras.
+      Controladores, vistas y modelos añadidos
+      Actualización de la cantidad del stock disponible de cada producto al añadir alguno al carrito en tiempo real.
+      Interfaz intuitiva, al añadir un producto se muestra encima del icono del carrito cuantos productos añadiste.
+      Relación con el sistema de pedidos.
+        
+     ✅ Implementación del sistema de pedidos.
+      Controladores, vistas y modelos tanto como para usuario normal como para administrador.
+      El administrador puede cambiar el estado del pedido que se le muestra al usuario.
+      
+     ✅ Rediseño de las vistas.
+      Para darle un toque más tradicional, de manera que entone mejor con mi idea de una panadería rústica.
+      
+     ✅ Correción de problemas relacionados al stock y su actualización en tiempo real.
+     (Los problemas y soluciones vienen detallados en el commit de esta semana).
+
+     
 ## 🚀 Instalación y Ejecución
 # Clonar el repositorio
 git clone https://github.com/DenisFernandez/DePan.git
