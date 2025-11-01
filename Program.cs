@@ -53,6 +53,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<ProductoService>();
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddScoped<CarritoService>();
+builder.Services.AddScoped<PedidoService>();
 
 // Configurar autorización
 builder.Services.AddAuthorization();

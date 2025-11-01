@@ -5,13 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - DePan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">DePan</a>
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="/images/logo-bread.png" alt="DePan" style="height:36px; margin-right:8px;" />
+                    <div>
+                        <div style="line-height:1; font-size:1.05rem;">DePan</div>
+                        <small style="font-size:0.65rem; color:#7a4e31;">Panadería artesanal</small>
+                    </div>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -35,8 +42,28 @@
                         @if (Context.Request.Cookies["jwt"] != null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Productos" asp-action="Admin">Admin</a>
+                                <a class="nav-link text-dark" asp-controller="Carrito" asp-action="Index">
+                                    <i class="fas fa-shopping-cart"></i> Carrito
+                                    <span class="contador-carrito badge bg-primary rounded-pill">0</span>
+                                </a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Pedidos" asp-action="MisPedidos">Mis Pedidos</a>
+                            </li>
+                            
+                            @if (User.IsInRole("Administrador") || User.IsInRole("administrador"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Administración
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" asp-controller="Productos" asp-action="Admin">Productos</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Pedidos" asp-action="Admin">Pedidos</a></li>
+                                    </ul>
+                                </li>
+                            }
+                            
                             <li class="nav-item">
                                 <form asp-controller="Auth" asp-action="Logout" method="post">
                                     <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar Sesión</button>
@@ -70,7 +97,38 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    <script>
+        // Cargar cantidad de items en el carrito al iniciar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarContadorCarrito();
+        });
+
+        async function cargarContadorCarrito() {
+            try {
+                const response = await fetch('@Url.Action("GetCantidadItems", "Carrito")');
+                const result = await response.json();
+                
+                const contador = document.querySelector('.contador-carrito');
+                if (contador) {
+                    contador.textContent = result.totalItems;
+                }
+            } catch (error) {
+                console.error('Error cargando contador del carrito:', error);
+            }
+        }
+
+        // Función global para actualizar contador (usada desde otras páginas)
+        function actualizarContadorCarrito(totalItems) {
+            const contador = document.querySelector('.contador-carrito');
+            if (contador) {
+                contador.textContent = totalItems;
+            }
+        }
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

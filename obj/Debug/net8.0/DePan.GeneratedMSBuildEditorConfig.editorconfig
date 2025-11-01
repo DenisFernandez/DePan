@@ -26,12 +26,36 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/Denis/Escritorio/Denis TFG/DePan/Views/Carrito/index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2Fycml0b1xpbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/Denis/Escritorio/Denis TFG/DePan/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/Denis/Escritorio/Denis TFG/DePan/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Denis/Escritorio/Denis TFG/DePan/Views/Pedidos/Admin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVkaWRvc1xBZG1pbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Denis/Escritorio/Denis TFG/DePan/Views/Pedidos/Checkout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVkaWRvc1xDaGVja291dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Denis/Escritorio/Denis TFG/DePan/Views/Pedidos/Confirmacion.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVkaWRvc1xDb25maXJtYWNpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Denis/Escritorio/Denis TFG/DePan/Views/Pedidos/Detalles.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVkaWRvc1xEZXRhbGxlcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Denis/Escritorio/Denis TFG/DePan/Views/Pedidos/MisPedidos.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVkaWRvc1xNaXNQZWRpZG9zLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/Denis/Escritorio/Denis TFG/DePan/Views/Productos/Admin.cshtml]

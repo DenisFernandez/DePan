@@ -20,3 +20,69 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* Rustic bakery theme */
+body {
+  background: linear-gradient(180deg, #fffaf0 0%, #fff7ee 100%);
+  color: #3b2f2f;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+}
+
+.navbar-brand {
+  font-family: 'Georgia', 'Times New Roman', Times, serif;
+  font-weight: 700;
+  color: #6b3e2b !important;
+}
+
+.navbar {
+  background: linear-gradient(90deg, #f6eee0, #f2e7d9);
+  border-bottom: 1px solid #e0cfc0;
+}
+
+.card, .btn, .alert {
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(59,47,47,0.06);
+}
+
+.btn-primary {
+  background-color: #8b5e3c !important;
+  border-color: #7a4e31 !important;
+}
+
+.btn-success {
+  background-color: #b0723f !important;
+  border-color: #8f5a36 !important;
+}
+
+.badge.bg-primary {
+  background-color: #7a4e31 !important;
+}
+
+/* Texture accent for product cards */
+.product-card {
+  background-image: url('/images/wood-texture.png');
+  background-size: cover;
+  background-blend-mode: multiply;
+  color: #2f1f1f;
+}
+
+footer {
+  background: #f6efe6;
+  padding: 18px 0;
+  border-top: 1px solid #e6d7c7;
+}
+
+/* Smaller, subtle shadows for alerts */
+.alert {
+  box-shadow: none;
+}
+
+/* Inputs */
+.form-control {
+  border: 1px solid #dcc7b3;
+}
+
+.contador-carrito {
+  background-color: #d9b89a !important;
+  color: #3b2f2f !important;
+}

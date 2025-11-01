@@ -1,0 +1,125 @@
+@model DePan.Models.CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Finalizar Compra";
+}
+
+<div class="container">
+    <h1 class="mb-4">Finalizar Compra</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Información de Envío</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Checkout" method="post">
+                        @Html.AntiForgeryToken()
+                        
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="DireccionEntrega" class="form-label">Dirección de Entrega *</label>
+                                <input asp-for="DireccionEntrega" class="form-control" />
+                                <span asp-validation-for="DireccionEntrega" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CiudadEntrega" class="form-label">Ciudad *</label>
+                                <input asp-for="CiudadEntrega" class="form-control" />
+                                <span asp-validation-for="CiudadEntrega" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CodigoPostalEntrega" class="form-label">Código Postal *</label>
+                                <input asp-for="CodigoPostalEntrega" class="form-control" />
+                                <span asp-validation-for="CodigoPostalEntrega" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TelefonoContacto" class="form-label">Teléfono de Contacto *</label>
+                                <input asp-for="TelefonoContacto" class="form-control" />
+                                <span asp-validation-for="TelefonoContacto" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Notas" class="form-label">Notas Adicionales (Opcional)</label>
+                            <textarea asp-for="Notas" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Notas" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="aceptoTerminos" required>
+                            <label class="form-check-label" for="aceptoTerminos">
+                                Acepto los términos y condiciones
+                            </label>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg" onclick="return validarTerminos()">
+                                Confirmar Pedido
+                            </button>
+                            <a href="@Url.Action("Index", "Carrito")" class="btn btn-outline-secondary">
+                                Volver al Carrito
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Resumen del Pedido</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Carrito != null)
+                    {
+                        foreach (var linea in Model.Carrito.LineaCarritos)
+                        {
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <small>@linea.IdProductoNavigation.Nombre</small>
+                                    <br>
+                                    <small class="text-muted">@linea.Cantidad x @linea.PrecioUnitario.ToString("C")</small>
+                                </div>
+                                <small>@linea.Subtotal.ToString("C")</small>
+                            </div>
+                        }
+                        
+                        <hr>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Subtotal:</span>
+                            <span>@Model.Carrito.Total.ToString("C")</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Envío:</span>
+                            <span>2,50 €</span>
+                        </div>
+                        <div class="d-flex justify-content-between fw-bold">
+                            <span>Total:</span>
+                            <span>@((Model.Carrito.Total + 2.50m).ToString("C"))</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function validarTerminos() {
+            if (!document.getElementById('aceptoTerminos').checked) {
+                alert('Debes aceptar los términos y condiciones para continuar');
+                return false;
+            }
+            return true;
+        }
+    </script>
+}

@@ -1,0 +1,62 @@
+@model DePan.Models.Pedido
+
+@{
+    ViewData["Title"] = "Pedido Confirmado";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h2 class="mb-0">¡Pedido Confirmado!</h2>
+                </div>
+                <div class="card-body">
+                    <i class="fas fa-check-circle text-success fa-5x mb-4"></i>
+                    
+                    <h3 class="text-success mb-3">Gracias por tu compra</h3>
+                    
+                    <div class="alert alert-info">
+                        <h5>Número de Pedido: <strong>@Model.NumeroPedido</strong></h5>
+                        <p class="mb-0">Hemos enviado un correo de confirmación con los detalles de tu pedido.</p>
+                    </div>
+
+                    <div class="row text-start mb-4">
+                        <div class="col-md-6">
+                            <h5>Resumen del Pedido:</h5>
+                            <p><strong>Fecha:</strong> @Model.FechaPedido.ToString("dd/MM/yyyy HH:mm")</p>
+                            <p><strong>Total:</strong> @Model.Total.ToString("C")</p>
+                            <p><strong>Estado:</strong> <span class="badge bg-warning">@Model.Estado</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Dirección de Entrega:</h5>
+                            <p>@Model.DireccionEntrega<br>
+                               @Model.CiudadEntrega, @Model.CodigoPostalEntrega<br>
+                               Tel: @Model.TelefonoContacto</p>
+                        </div>
+                    </div>
+
+                    @if (Model.FechaEntregaEstimada.HasValue)
+                    {
+                        <div class="alert alert-warning">
+                            <h6>📦 Entrega Estimada</h6>
+                            <p class="mb-0">Tu pedido llegará aproximadamente el <strong>@Model.FechaEntregaEstimada.Value.ToString("dd/MM/yyyy")</strong></p>
+                        </div>
+                    }
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-center">
+                        <a href="@Url.Action("Detalles", new { id = Model.IdPedido })" class="btn btn-primary btn-lg">
+                            Ver Detalles del Pedido
+                        </a>
+                        <a href="@Url.Action("MisPedidos")" class="btn btn-outline-primary btn-lg">
+                            Mis Pedidos
+                        </a>
+                        <a href="@Url.Action("Index", "Productos")" class="btn btn-outline-secondary btn-lg">
+                            Seguir Comprando
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

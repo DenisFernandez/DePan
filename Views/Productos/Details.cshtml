@@ -18,7 +18,7 @@
             <p class="mt-3">@Model.Descripcion</p>
             
             <div class="mt-4">
-                <p><strong>Stock disponible:</strong> @Model.Stock unidades</p>
+                <p><strong>Stock disponible:</strong> <span id="stock-disponible">@Model.Stock</span> unidades</p>
                 <p>
                     <strong>Estado:</strong> 
                     @if (Model.Disponible == true)
@@ -33,12 +33,113 @@
             </div>
 
             <div class="mt-4">
-                <a href="@Url.Action("Index")" class="btn btn-secondary">Volver al Catálogo</a>
                 @if (Model.Disponible == true && Model.Stock > 0)
                 {
-                    <button class="btn btn-success">Añadir al Carrito</button>
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <button class="btn btn-outline-secondary" type="button" onclick="cambiarCantidad(-1)">-</button>
+                                <input type="number" class="form-control text-center" id="cantidad" value="1" min="1" max="@Model.Stock">
+                                <button class="btn btn-outline-secondary" type="button" onclick="cambiarCantidad(1)">+</button>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <button class="btn btn-success w-100" onclick="agregarAlCarrito(@Model.IdProducto)">
+                                <i class="fas fa-cart-plus"></i> Añadir al Carrito
+                            </button>
+                        </div>
+                    </div>
+                    <div id="mensaje-carrito" class="mt-2"></div>
                 }
+                else
+                {
+                    <button class="btn btn-secondary" disabled>Producto no disponible</button>
+                }
+            </div>
+
+            <div class="mt-4">
+                <a href="@Url.Action("Index")" class="btn btn-secondary">Volver al Catálogo</a>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function cambiarCantidad(cambio) {
+            const input = document.getElementById('cantidad');
+            let nuevaCantidad = parseInt(input.value) + cambio;
+            const stock = @Model.Stock;
+            
+            if (nuevaCantidad < 1) nuevaCantidad = 1;
+            if (nuevaCantidad > stock) nuevaCantidad = stock;
+            
+            input.value = nuevaCantidad;
+        }
+
+        async function agregarAlCarrito(productoId) {
+            const cantidad = parseInt(document.getElementById('cantidad').value);
+            const mensajeDiv = document.getElementById('mensaje-carrito');
+            
+            try {
+                const response = await fetch('@Url.Action("Agregar", "Carrito")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    body: JSON.stringify({ productoId, cantidad })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    mensajeDiv.innerHTML = `
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle"></i> ${result.message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `;
+                    
+                    // Actualizar contador del carrito en el navbar (si existe)
+                    if (typeof actualizarContadorCarrito === 'function') {
+                        actualizarContadorCarrito(result.totalItems);
+                    }
+                    
+                    // Reducir el stock mostrado
+                    const stockElement = document.getElementById('stock-disponible');
+                    const stockActual = parseInt(stockElement.textContent);
+                    stockElement.textContent = stockActual - cantidad;
+                    
+                    // Actualizar máximo del input
+                    document.getElementById('cantidad').max = stockActual - cantidad;
+                    
+                } else {
+                    mensajeDiv.innerHTML = `
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle"></i> ${result.message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `;
+                }
+                
+                // Auto-ocultar mensaje después de 3 segundos
+                setTimeout(() => {
+                    const alert = mensajeDiv.querySelector('.alert');
+                    if (alert) {
+                        alert.remove();
+                    }
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                mensajeDiv.innerHTML = `
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle"></i> Error al agregar al carrito
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+            }
+        }
+    </script>
+}

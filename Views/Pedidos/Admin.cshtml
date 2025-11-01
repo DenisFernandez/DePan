@@ -1,0 +1,186 @@
+@model List<DePan.Models.Pedido>
+
+@{
+    ViewData["Title"] = "Administración de Pedidos";
+    var estadisticas = ViewBag.Estadisticas as dynamic;
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Administración de Pedidos</h1>
+    </div>
+
+    <!-- Estadísticas -->
+    @if (estadisticas != null)
+    {
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">@estadisticas.TotalPedidos</h5>
+                        <p class="card-text">Total Pedidos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">@estadisticas.PedidosHoy</h5>
+                        <p class="card-text">Pedidos Hoy</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">@estadisticas.PedidosPendientes</h5>
+                        <p class="card-text">Pendientes</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <h5 class="card-title">@estadisticas.IngresosTotales.ToString("C")</h5>
+                        <p class="card-text">Ingresos Totales</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Filtrar por Estado</h5>
+            <div class="btn-group" role="group">
+                <a href="@Url.Action("Admin")" class="btn btn-outline-primary">Todos</a>
+                <a href="@Url.Action("PorEstado", new { estado = "Pendiente" })" class="btn btn-outline-warning">Pendientes</a>
+                <a href="@Url.Action("PorEstado", new { estado = "Confirmado" })" class="btn btn-outline-info">Confirmados</a>
+                <a href="@Url.Action("PorEstado", new { estado = "Preparando" })" class="btn btn-outline-primary">Preparando</a>
+                <a href="@Url.Action("PorEstado", new { estado = "En camino" })" class="btn btn-outline-secondary">En Camino</a>
+                <a href="@Url.Action("PorEstado", new { estado = "Entregado" })" class="btn btn-outline-success">Entregados</a>
+                <a href="@Url.Action("PorEstado", new { estado = "Cancelado" })" class="btn btn-outline-danger">Cancelados</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de pedidos -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Lista de Pedidos</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>N° Pedido</th>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var pedido in Model)
+                        {
+                            <tr>
+                                <td>@pedido.NumeroPedido</td>
+                                <td>
+                                    @pedido.IdUsuarioClienteNavigation?.Nombre @pedido.IdUsuarioClienteNavigation?.Apellidos
+                                    <br>
+                                    <small class="text-muted">@pedido.IdUsuarioClienteNavigation?.Email</small>
+                                </td>
+                                <td>@pedido.FechaPedido.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@pedido.Total.ToString("C")</td>
+                                <td>
+                                    <span class="badge @GetEstadoBadgeClass(pedido.Estado)">@pedido.Estado</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="@Url.Action("Detalles", new { id = pedido.IdPedido })" class="btn btn-info btn-sm">
+                                            Ver
+                                        </a>
+                                        <div class="dropdown">
+                                            <button class="btn btn-warning btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                Estado
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" onclick="cambiarEstado(@pedido.IdPedido, 'Pendiente')">Pendiente</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="cambiarEstado(@pedido.IdPedido, 'Confirmado')">Confirmado</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="cambiarEstado(@pedido.IdPedido, 'Preparando')">Preparando</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="cambiarEstado(@pedido.IdPedido, 'En camino')">En Camino</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="cambiarEstado(@pedido.IdPedido, 'Entregado')">Entregado</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="cambiarEstado(@pedido.IdPedido, 'Cancelado')">Cancelado</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @if (!Model.Any())
+            {
+                <div class="text-center py-4">
+                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                    <h5>No hay pedidos</h5>
+                    <p class="text-muted">No se encontraron pedidos con los filtros aplicados</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        async function cambiarEstado(pedidoId, nuevoEstado) {
+            if (!confirm(`¿Cambiar estado del pedido a "${nuevoEstado}"?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('@Url.Action("ActualizarEstado", "Pedidos")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    body: JSON.stringify({ pedidoId, nuevoEstado })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Estado actualizado correctamente');
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al cambiar el estado');
+            }
+        }
+    </script>
+}
+
+@functions {
+    public string GetEstadoBadgeClass(string estado)
+    {
+        return estado.ToLower() switch
+        {
+            "pendiente" => "bg-warning",
+            "confirmado" => "bg-info",
+            "preparando" => "bg-primary",
+            "en camino" => "bg-secondary",
+            "entregado" => "bg-success",
+            "cancelado" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+}
