@@ -2,13 +2,40 @@
 
 @{
     ViewData["Title"] = "Mi Carrito";
+    
+    // Calcular tiempo de expiración más próximo si hay productos en el carrito
+    TimeSpan tiempoExpiracion = TimeSpan.FromMinutes(2); // 2 minutos para testing
+    var lineaMasAntigua = Model.LineaCarritos.OrderBy(l => l.FechaReserva).FirstOrDefault();
+    TimeSpan tiempoTranscurrido = lineaMasAntigua != null ? DateTime.Now - lineaMasAntigua.FechaReserva : TimeSpan.Zero;
+    TimeSpan tiempoRestante = tiempoExpiracion - tiempoTranscurrido;
+    int segundosRestantes = (int)tiempoRestante.TotalSeconds;
+    bool mostrarAdvertencia = segundosRestantes <= 60 && segundosRestantes > 0; // Advertencia cuando quede 60 segundos o menos
+    bool carritoExpirado = segundosRestantes <= 0;
 }
 
 <div class="container">
     <h1 class="mb-4">Mi Carrito de Compras</h1>
 
-    @if (Model.LineaCarritos.Any())
+    @* Notificación de expiración persistente (controlada por JavaScript) *@
+    <div id="notificacion-expirado" class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none;">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>¡Tu carrito ha expirado!</strong> Los productos han sido devueltos al stock automáticamente después de 2 minutos sin confirmar.
+        <button type="button" class="btn-close" onclick="cerrarNotificacionExpiracion()"></button>
+    </div>
+
+    @if (Model.LineaCarritos.Any() && !carritoExpirado)
     {
+        @* Advertencia de expiración *@
+        if (mostrarAdvertencia)
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <i class="fas fa-clock"></i>
+                <strong>¡Atención!</strong> Tu carrito expirará en <strong><span id="tiempo-restante">@segundosRestantes</span> segundos</strong>. 
+                Completa tu pedido pronto para no perder la reserva.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
         <div class="row">
             <div class="col-md-8">
                 <div class="card">
@@ -95,6 +122,7 @@
     }
     else
     {
+        @* Mostrar mensaje de carrito vacío (sin mostrar la alerta de expiración aquí, se maneja con JavaScript) *@
         <div class="text-center py-5">
             <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
             <h3>Tu carrito está vacío</h3>
@@ -108,6 +136,80 @@
 
 @section Scripts {
     <script>
+        // Verificar y mostrar notificación de expiración al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            verificarNotificacionExpiracion();
+        });
+
+        function verificarNotificacionExpiracion() {
+            var notificacionData = localStorage.getItem('carrito_expirado');
+            if (notificacionData) {
+                var data = JSON.parse(notificacionData);
+                var ahora = new Date().getTime();
+                var tiempoTranscurrido = ahora - data.timestamp;
+                var DURACION_NOTIFICACION = 3 * 60 * 1000; // 3 minutos
+                
+                // Mostrar notificación si han pasado menos de 3 minutos
+                if (tiempoTranscurrido < DURACION_NOTIFICACION) {
+                    var notificacion = document.getElementById('notificacion-expirado');
+                    if (notificacion) {
+                        notificacion.style.display = 'block';
+                    }
+                    
+                    // Auto-ocultar después del tiempo restante
+                    setTimeout(function() {
+                        cerrarNotificacionExpiracion();
+                    }, DURACION_NOTIFICACION - tiempoTranscurrido);
+                } else {
+                    // Limpiar si ya pasaron los 3 minutos
+                    localStorage.removeItem('carrito_expirado');
+                }
+            }
+        }
+
+        function cerrarNotificacionExpiracion() {
+            var notificacion = document.getElementById('notificacion-expirado');
+            if (notificacion) {
+                notificacion.style.display = 'none';
+            }
+            localStorage.removeItem('carrito_expirado');
+        }
+
+        function marcarCarritoComoExpirado() {
+            localStorage.setItem('carrito_expirado', JSON.stringify({
+                timestamp: new Date().getTime()
+            }));
+        }
+
+        // Actualizar contador de tiempo restante cada segundo
+        @if (Model.LineaCarritos.Any() && mostrarAdvertencia)
+        {
+            @:var segundosRestantes = @segundosRestantes;
+            @:
+            @:var intervalo = setInterval(function() {
+            @:    segundosRestantes--;
+            @:    var elemento = document.getElementById('tiempo-restante');
+            @:    if (elemento) {
+            @:        elemento.textContent = segundosRestantes;
+            @:        
+            @:        if (segundosRestantes <= 0) {
+            @:            clearInterval(intervalo);
+            @:            marcarCarritoComoExpirado();
+            @:            location.reload();
+            @:        }
+            @:    }
+            @:}, 1000);
+        }
+
+        // Si el carrito ya expiró, marcar y recargar
+        @if (carritoExpirado)
+        {
+            @:marcarCarritoComoExpirado();
+            @:setTimeout(function() {
+            @:    location.reload();
+            @:}, 3000);
+        }
+
         async function actualizarCantidad(lineaCarritoId, nuevaCantidad) {
             if (nuevaCantidad < 1) return;
             

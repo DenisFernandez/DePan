@@ -37,7 +37,7 @@ namespace DePan.Services
                     IdUsuarioCliente = usuarioId,
                     NumeroPedido = numeroPedido,
                     FechaPedido = DateTime.Now,
-                    Estado = "Pendiente",
+                    Estado = "pendiente",
                     DireccionEntrega = direccionEntrega,
                     CiudadEntrega = ciudadEntrega,
                     CodigoPostalEntrega = codigoPostal,
@@ -65,16 +65,11 @@ namespace DePan.Services
                     };
                     _context.LineaPedidos.Add(lineaPedido);
 
-                    // Actualizar stock del producto
-                    var producto = await _context.Productos.FindAsync(lineaCarrito.IdProducto);
-                    if (producto != null)
-                    {
-                        producto.Stock -= lineaCarrito.Cantidad;
-                        if (producto.Stock < 0) producto.Stock = 0;
-                    }
+                    // NO actualizar stock aquí porque ya se decrementó al agregar al carrito
+                    // El stock ya fue reservado cuando se agregó el producto al carrito
                 }
 
-                // Vaciar carrito
+                // Vaciar carrito - eliminar las reservas ya que ahora son parte del pedido
                 _context.LineaCarritos.RemoveRange(carrito.LineaCarritos);
                 carrito.Total = 0;
                 carrito.FechaActualizacion = DateTime.Now;
@@ -135,8 +130,8 @@ namespace DePan.Services
                         pedido.IdRepartidor = idRepartidor.Value;
                     }
 
-                    // Si el estado es "Entregado", establecer fecha de entrega real
-                    if (nuevoEstado == "Entregado")
+                    // Si el estado es "entregado", establecer fecha de entrega real
+                    if (nuevoEstado.ToLower() == "entregado")
                     {
                         pedido.FechaEntregaReal = DateTime.Now;
                     }
@@ -162,6 +157,55 @@ namespace DePan.Services
                 .Where(p => p.Estado == estado)
                 .OrderBy(p => p.FechaPedido)
                 .ToListAsync();
+        }
+
+        // Eliminar pedido (solo para administradores)
+        public async Task<bool> EliminarPedidoAsync(int pedidoId)
+        {
+            try
+            {
+                var pedido = await _context.Pedidos
+                    .Include(p => p.LineaPedidos)
+                    .ThenInclude(lp => lp.IdProductoNavigation)
+                    .FirstOrDefaultAsync(p => p.IdPedido == pedidoId);
+
+                if (pedido == null)
+                {
+                    return false;
+                }
+
+                // Si el pedido no está entregado ni cancelado, restaurar el stock
+                if (pedido.Estado.ToLower() != "entregado" && pedido.Estado.ToLower() != "cancelado")
+                {
+                    foreach (var linea in pedido.LineaPedidos)
+                    {
+                        var producto = linea.IdProductoNavigation;
+                        if (producto != null)
+                        {
+                            producto.Stock += linea.Cantidad;
+                        }
+                    }
+                }
+
+                // Eliminar líneas de pedido
+                _context.LineaPedidos.RemoveRange(pedido.LineaPedidos);
+
+                // Eliminar seguimientos del pedido si existen
+                var seguimientos = await _context.SeguimientoPedidos
+                    .Where(s => s.IdPedido == pedidoId)
+                    .ToListAsync();
+                _context.SeguimientoPedidos.RemoveRange(seguimientos);
+
+                // Eliminar el pedido
+                _context.Pedidos.Remove(pedido);
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         // Obtener estadísticas de pedidos

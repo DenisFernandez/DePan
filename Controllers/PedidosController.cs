@@ -143,9 +143,14 @@ namespace DePan.Controllers
         // POST: /Pedidos/ActualizarEstado
         [HttpPost]
         [Authorize(Roles = "Administrador,administrador")]
-        public async Task<IActionResult> ActualizarEstado(int pedidoId, string nuevoEstado, int? repartidorId = null)
+        public async Task<IActionResult> ActualizarEstado([FromBody] ActualizarEstadoRequest request)
         {
-            var result = await _pedidoService.ActualizarEstadoPedidoAsync(pedidoId, nuevoEstado, repartidorId);
+            if (request == null || request.PedidoId <= 0 || string.IsNullOrEmpty(request.NuevoEstado))
+            {
+                return Json(new { success = false, message = "Datos inválidos" });
+            }
+
+            var result = await _pedidoService.ActualizarEstadoPedidoAsync(request.PedidoId, request.NuevoEstado, request.RepartidorId);
             
             if (result)
             {
@@ -153,6 +158,39 @@ namespace DePan.Controllers
             }
 
             return Json(new { success = false, message = "Error al actualizar estado" });
+        }
+
+        // POST: /Pedidos/Eliminar
+        [HttpPost]
+        [Authorize(Roles = "Administrador,administrador")]
+        public async Task<IActionResult> Eliminar([FromBody] EliminarPedidoRequest request)
+        {
+            if (request == null || request.PedidoId <= 0)
+            {
+                return Json(new { success = false, message = "ID de pedido inválido" });
+            }
+
+            var result = await _pedidoService.EliminarPedidoAsync(request.PedidoId);
+            
+            if (result)
+            {
+                return Json(new { success = true, message = "Pedido eliminado correctamente" });
+            }
+
+            return Json(new { success = false, message = "Error al eliminar el pedido" });
+        }
+
+        // Clase helper para recibir datos JSON
+        public class ActualizarEstadoRequest
+        {
+            public int PedidoId { get; set; }
+            public string NuevoEstado { get; set; } = string.Empty;
+            public int? RepartidorId { get; set; }
+        }
+
+        public class EliminarPedidoRequest
+        {
+            public int PedidoId { get; set; }
         }
 
         // GET: /Pedidos/PorEstado

@@ -60,3 +60,14 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script>
+        // Limpiar notificación de carrito expirado al confirmar pedido
+        localStorage.removeItem('carrito_expirado');
+        
+        // Actualizar contador del carrito (debería estar en 0)
+        if (typeof actualizarContadorCarrito === 'function') {
+            actualizarContadorCarrito(0);
+        }
+    </script>
+}

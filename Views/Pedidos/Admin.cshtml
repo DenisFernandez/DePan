@@ -101,21 +101,23 @@
                                 <td>
                                     <div class="btn-group" role="group">
                                         <a href="@Url.Action("Detalles", new { id = pedido.IdPedido })" class="btn btn-info btn-sm">
-                                            Ver
+                                            <i class="fas fa-eye"></i> Ver
                                         </a>
                                         <div class="dropdown">
                                             <button class="btn btn-warning btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                                Estado
+                                                <i class="fas fa-exchange-alt"></i> Estado
                                             </button>
                                             <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#" onclick="cambiarEstado(@pedido.IdPedido, 'Pendiente')">Pendiente</a></li>
-                                                <li><a class="dropdown-item" href="#" onclick="cambiarEstado(@pedido.IdPedido, 'Confirmado')">Confirmado</a></li>
-                                                <li><a class="dropdown-item" href="#" onclick="cambiarEstado(@pedido.IdPedido, 'Preparando')">Preparando</a></li>
-                                                <li><a class="dropdown-item" href="#" onclick="cambiarEstado(@pedido.IdPedido, 'En camino')">En Camino</a></li>
-                                                <li><a class="dropdown-item" href="#" onclick="cambiarEstado(@pedido.IdPedido, 'Entregado')">Entregado</a></li>
-                                                <li><a class="dropdown-item" href="#" onclick="cambiarEstado(@pedido.IdPedido, 'Cancelado')">Cancelado</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="cambiarEstado(@pedido.IdPedido, 'pendiente')">Pendiente</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="cambiarEstado(@pedido.IdPedido, 'preparando')">Preparando</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="cambiarEstado(@pedido.IdPedido, 'enviado')">Enviado</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="cambiarEstado(@pedido.IdPedido, 'entregado')">Entregado</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="cambiarEstado(@pedido.IdPedido, 'cancelado')">Cancelado</a></li>
                                             </ul>
                                         </div>
+                                        <button class="btn btn-danger btn-sm" onclick="eliminarPedido(@pedido.IdPedido, '@pedido.NumeroPedido')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -147,11 +149,17 @@
                 const response = await fetch('@Url.Action("ActualizarEstado", "Pedidos")', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ pedidoId, nuevoEstado })
+                    body: JSON.stringify({ 
+                        pedidoId: pedidoId, 
+                        nuevoEstado: nuevoEstado 
+                    })
                 });
+
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
 
                 const result = await response.json();
                 
@@ -163,7 +171,41 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error al cambiar el estado');
+                alert('Error al cambiar el estado: ' + error.message);
+            }
+        }
+
+        async function eliminarPedido(pedidoId, numeroPedido) {
+            if (!confirm(`¿Estás seguro de que deseas eliminar el pedido ${numeroPedido}?\n\nEsta acción no se puede deshacer.\n\nSi el pedido no está entregado o cancelado, el stock se restaurará automáticamente.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('@Url.Action("Eliminar", "Pedidos")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        pedidoId: pedidoId
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Pedido eliminado correctamente');
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al eliminar el pedido: ' + error.message);
             }
         }
     </script>

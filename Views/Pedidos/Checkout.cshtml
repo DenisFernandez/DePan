@@ -7,6 +7,9 @@
 <div class="container">
     <h1 class="mb-4">Finalizar Compra</h1>
 
+    <!-- Área de mensajes -->
+    <div id="mensaje-checkout" style="display: none;"></div>
+
     <div class="row">
         <div class="col-md-8">
             <div class="card">
@@ -14,7 +17,7 @@
                     <h5 class="card-title mb-0">Información de Envío</h5>
                 </div>
                 <div class="card-body">
-                    <form asp-action="Checkout" method="post">
+                    <form id="formCheckout" asp-action="Checkout" method="post">
                         @Html.AntiForgeryToken()
                         
                         <div class="row">
@@ -60,11 +63,17 @@
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success btn-lg" onclick="return validarTerminos()">
-                                Confirmar Pedido
+                            <button type="submit" id="btnConfirmar" class="btn btn-success btn-lg">
+                                <span id="btnText">
+                                    <i class="fas fa-check-circle"></i> Confirmar Pedido
+                                </span>
+                                <span id="btnSpinner" style="display: none;">
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    Procesando...
+                                </span>
                             </button>
                             <a href="@Url.Action("Index", "Carrito")" class="btn btn-outline-secondary">
-                                Volver al Carrito
+                                <i class="fas fa-arrow-left"></i> Volver al Carrito
                             </a>
                         </div>
                     </form>
@@ -114,12 +123,109 @@
 
 @section Scripts {
     <script>
-        function validarTerminos() {
+        document.getElementById('formCheckout').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validar términos
             if (!document.getElementById('aceptoTerminos').checked) {
-                alert('Debes aceptar los términos y condiciones para continuar');
-                return false;
+                mostrarMensaje('Debes aceptar los términos y condiciones para continuar', 'warning');
+                return;
             }
-            return true;
+
+            // Deshabilitar botón y mostrar spinner
+            const btnConfirmar = document.getElementById('btnConfirmar');
+            const btnText = document.getElementById('btnText');
+            const btnSpinner = document.getElementById('btnSpinner');
+            
+            btnConfirmar.disabled = true;
+            btnText.style.display = 'none';
+            btnSpinner.style.display = 'inline-block';
+
+            try {
+                const formData = new FormData(this);
+                
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.redirected) {
+                    // Si hubo redirección, el pedido se creó exitosamente
+                    mostrarMensaje('¡Tu pedido ha sido recibido con éxito! Redirigiendo...', 'success');
+                    setTimeout(() => {
+                        window.location.href = response.url;
+                    }, 2000);
+                } else if (response.ok) {
+                    // Verificar si hay redirección en el HTML
+                    const html = await response.text();
+                    if (html.includes('Pedido Confirmado') || html.includes('Confirmacion')) {
+                        mostrarMensaje('¡Tu pedido ha sido recibido con éxito! Redirigiendo...', 'success');
+                        setTimeout(() => {
+                            window.location.href = '@Url.Action("MisPedidos", "Pedidos")';
+                        }, 2000);
+                    } else {
+                        // Hubo un error en el formulario
+                        mostrarMensaje('Por favor, verifica que todos los campos estén correctamente completados.', 'danger');
+                        btnConfirmar.disabled = false;
+                        btnText.style.display = 'inline-block';
+                        btnSpinner.style.display = 'none';
+                    }
+                } else {
+                    throw new Error('Error en el servidor');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarMensaje('Hubo un problema al procesar tu pedido. Por favor, inténtalo de nuevo o contacta con soporte.', 'danger');
+                
+                // Rehabilitar botón
+                btnConfirmar.disabled = false;
+                btnText.style.display = 'inline-block';
+                btnSpinner.style.display = 'none';
+            }
+        });
+
+        function mostrarMensaje(texto, tipo) {
+            const mensajeDiv = document.getElementById('mensaje-checkout');
+            
+            let icono = '';
+            switch(tipo) {
+                case 'success':
+                    icono = '<i class="fas fa-check-circle"></i>';
+                    break;
+                case 'danger':
+                    icono = '<i class="fas fa-exclamation-circle"></i>';
+                    break;
+                case 'warning':
+                    icono = '<i class="fas fa-exclamation-triangle"></i>';
+                    break;
+                case 'info':
+                    icono = '<i class="fas fa-info-circle"></i>';
+                    break;
+            }
+            
+            mensajeDiv.innerHTML = `
+                <div class="alert alert-${tipo} alert-dismissible fade show" role="alert">
+                    ${icono} ${texto}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            mensajeDiv.style.display = 'block';
+            
+            // Scroll suave hacia el mensaje
+            mensajeDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+            // Auto-ocultar después de 5 segundos (excepto errores)
+            if (tipo !== 'danger') {
+                setTimeout(() => {
+                    const alert = mensajeDiv.querySelector('.alert');
+                    if (alert) {
+                        alert.classList.remove('show');
+                        setTimeout(() => {
+                            mensajeDiv.style.display = 'none';
+                        }, 150);
+                    }
+                }, 5000);
+            }
         }
     </script>
 }

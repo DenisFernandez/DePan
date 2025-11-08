@@ -29,7 +29,18 @@ namespace DePan.Controllers
                 carrito = new Carrito { LineaCarritos = new List<LineaCarrito>() };
             }
 
+            // Verificar si hay una notificación de expiración activa
+            ViewBag.MostrarNotificacionExpiracion = Request.Cookies["carrito_expirado"] == "true";
+
             return View(carrito);
+        }
+        
+        // POST: /Carrito/DismissExpiracion
+        [HttpPost]
+        public IActionResult DismissExpiracion()
+        {
+            Response.Cookies.Delete("carrito_expirado");
+            return Json(new { success = true });
         }
         // GET: /Carrito/GetCantidadItems
         [HttpGet]
@@ -40,6 +51,33 @@ namespace DePan.Controllers
             var totalItems = carrito != null ? _carritoService.ObtenerCantidadItems(carrito) : 0;
             
             return Json(new { totalItems });
+        }
+
+        // GET: /Carrito/CheckExpiracion
+        [HttpGet]
+        public async Task<IActionResult> CheckExpiracion()
+        {
+            var usuarioId = GetUsuarioId();
+            var carrito = await _carritoService.GetCarritoUsuarioAsync(usuarioId);
+            
+            if (carrito == null || !carrito.LineaCarritos.Any())
+            {
+                return Json(new { tieneAlerta = false });
+            }
+
+            // Verificar si hay algún producto con menos de 1 minuto para expirar
+            var ahora = DateTime.Now;
+            var tiempoExpiracion = TimeSpan.FromMinutes(2); // Debe coincidir con el valor en CarritoCleanupService
+            var umbralAlerta = TimeSpan.FromMinutes(1);
+            
+            var hayProductosProximosExpirar = carrito.LineaCarritos.Any(lc => 
+            {
+                var tiempoTranscurrido = ahora - lc.FechaReserva;
+                var tiempoRestante = tiempoExpiracion - tiempoTranscurrido;
+                return tiempoRestante <= umbralAlerta && tiempoRestante > TimeSpan.Zero;
+            });
+
+            return Json(new { tieneAlerta = hayProductosProximosExpirar });
         }
 
         // POST: /Carrito/Agregar

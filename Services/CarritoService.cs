@@ -61,6 +61,7 @@ namespace DePan.Services
 
                     lineaExistente.Cantidad += cantidad;
                     lineaExistente.Subtotal = lineaExistente.Cantidad * producto.Precio;
+                    lineaExistente.FechaReserva = DateTime.Now; // Refresh reservation time
                 }
                 else
                 {
@@ -71,7 +72,8 @@ namespace DePan.Services
                         IdProducto = productoId,
                         Cantidad = cantidad,
                         PrecioUnitario = producto.Precio,
-                        Subtotal = cantidad * producto.Precio
+                        Subtotal = cantidad * producto.Precio,
+                        FechaReserva = DateTime.Now
                     };
                     _context.LineaCarritos.Add(nuevaLinea);
                 }

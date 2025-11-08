@@ -1,0 +1,484 @@
+@{
+    ViewData["Title"] = "Panel de Reportes";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="mb-3">
+                        <i class="fas fa-chart-line"></i> Panel de Reportes Avanzados
+                    </h1>
+                    <p class="text-muted">Análisis detallado de ventas, productos y clientes</p>
+                </div>
+                <div class="text-end">
+                    <small class="text-muted d-block">
+                        <i class="fas fa-sync-alt fa-spin" id="icono-actualizacion" style="display: none;"></i>
+                        Última actualización: <span id="ultima-actualizacion">-</span>
+                    </small>
+                    <small class="text-muted d-block">
+                        <i class="fas fa-clock"></i> Se actualiza automáticamente cada minuto
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas Generales -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Total Clientes</h6>
+                            <h2 class="mb-0" id="stat-clientes">-</h2>
+                        </div>
+                        <i class="fas fa-users fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Ventas del Mes</h6>
+                            <h2 class="mb-0" id="stat-ventas-mes">-</h2>
+                        </div>
+                        <i class="fas fa-dollar-sign fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Pedidos del Mes</h6>
+                            <h2 class="mb-0" id="stat-pedidos-mes">-</h2>
+                        </div>
+                        <i class="fas fa-shopping-cart fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Bajo Stock</h6>
+                            <h2 class="mb-0" id="stat-bajo-stock">-</h2>
+                        </div>
+                        <i class="fas fa-exclamation-triangle fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficos de Ventas -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-area"></i> Evolución de Ventas (Últimos 6 Meses)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartVentasMensuales" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-pie"></i> Estados de Pedidos
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartEstadosPedidos"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Productos y Categorías -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-star"></i> Top 10 Productos Más Vendidos
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartProductosMasVendidos" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-layer-group"></i> Ventas por Categoría
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartVentasCategorias" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Análisis de Clientes -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-user-chart"></i> Top 10 Mejores Clientes
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="tabla-mejores-clientes">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Cliente (Email)</th>
+                                    <th>Total Pedidos</th>
+                                    <th>Total Gastado</th>
+                                    <th>Última Compra</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        <div class="spinner-border" role="status">
+                                            <span class="visually-hidden">Cargando...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        // Configuración de colores
+        const colors = {
+            primary: '#8b5e3c',
+            success: '#b0723f',
+            info: '#17a2b8',
+            warning: '#ffc107',
+            danger: '#dc3545',
+            secondary: '#6c757d'
+        };
+
+        // Variables globales para los gráficos
+        let chartVentas, chartProductos, chartCategorias, chartEstados;
+
+        // Cargar todos los datos al iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarTodosDatos();
+            
+            // Actualizar automáticamente cada 60 segundos (1 minuto)
+            setInterval(function() {
+                actualizarTodosDatos();
+            }, 60000);
+        });
+
+        // Función para actualizar todos los datos
+        function actualizarTodosDatos() {
+            // Mostrar icono de actualización
+            const icono = document.getElementById('icono-actualizacion');
+            if (icono) icono.style.display = 'inline-block';
+            
+            // Destruir gráficos existentes
+            if (chartVentas) chartVentas.destroy();
+            if (chartProductos) chartProductos.destroy();
+            if (chartCategorias) chartCategorias.destroy();
+            if (chartEstados) chartEstados.destroy();
+            
+            // Recargar todos los datos
+            cargarTodosDatos();
+            
+            // Ocultar icono después de 1 segundo
+            setTimeout(function() {
+                if (icono) icono.style.display = 'none';
+            }, 1000);
+        }
+
+        // Función para cargar todos los datos
+        function cargarTodosDatos() {
+            cargarEstadisticasGenerales();
+            cargarGraficoVentasMensuales();
+            cargarGraficoProductosMasVendidos();
+            cargarGraficoVentasCategorias();
+            cargarGraficoEstadosPedidos();
+            cargarAnalisisClientes();
+            
+            // Actualizar timestamp
+            document.getElementById('ultima-actualizacion').textContent = new Date().toLocaleTimeString('es-ES');
+        }
+
+        // Estadísticas Generales
+        async function cargarEstadisticasGenerales() {
+            try {
+                const response = await fetch('@Url.Action("GetEstadisticasGenerales", "Reportes")');
+                const data = await response.json();
+                
+                document.getElementById('stat-clientes').textContent = data.totalClientes;
+                document.getElementById('stat-ventas-mes').textContent = new Intl.NumberFormat('es-ES', { 
+                    style: 'currency', 
+                    currency: 'EUR' 
+                }).format(data.ventasMes);
+                document.getElementById('stat-pedidos-mes').textContent = data.pedidosMes;
+                document.getElementById('stat-bajo-stock').textContent = data.productosBajoStock;
+            } catch (error) {
+                console.error('Error cargando estadísticas generales:', error);
+            }
+        }
+
+        // Gráfico de Ventas Mensuales
+        async function cargarGraficoVentasMensuales() {
+            try {
+                const response = await fetch('@Url.Action("GetVentasPorMes", "Reportes")');
+                const data = await response.json();
+                
+                const ctx = document.getElementById('chartVentasMensuales').getContext('2d');
+                chartVentas = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            {
+                                label: 'Ventas (€)',
+                                data: data.ventas,
+                                borderColor: colors.primary,
+                                backgroundColor: 'rgba(139, 94, 60, 0.1)',
+                                tension: 0.4,
+                                fill: true,
+                                yAxisID: 'y'
+                            },
+                            {
+                                label: 'Número de Pedidos',
+                                data: data.pedidos,
+                                borderColor: colors.success,
+                                backgroundColor: 'rgba(176, 114, 63, 0.1)',
+                                tension: 0.4,
+                                fill: true,
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'Ventas (€)'
+                                }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'Pedidos'
+                                },
+                                grid: {
+                                    drawOnChartArea: false
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error cargando gráfico de ventas mensuales:', error);
+            }
+        }
+
+        // Gráfico de Productos Más Vendidos
+        async function cargarGraficoProductosMasVendidos() {
+            try {
+                const response = await fetch('@Url.Action("GetProductosMasVendidos", "Reportes")');
+                const data = await response.json();
+                
+                const ctx = document.getElementById('chartProductosMasVendidos').getContext('2d');
+                chartProductos = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.productos,
+                        datasets: [{
+                            label: 'Cantidad Vendida',
+                            data: data.cantidades,
+                            backgroundColor: colors.primary,
+                            borderColor: colors.primary,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Unidades Vendidas'
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error cargando gráfico de productos más vendidos:', error);
+            }
+        }
+
+        // Gráfico de Ventas por Categorías
+        async function cargarGraficoVentasCategorias() {
+            try {
+                const response = await fetch('@Url.Action("GetVentasPorCategoria", "Reportes")');
+                const data = await response.json();
+                
+                const ctx = document.getElementById('chartVentasCategorias').getContext('2d');
+                chartCategorias = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.categorias,
+                        datasets: [{
+                            label: 'Ventas (€)',
+                            data: data.ventas,
+                            backgroundColor: colors.success,
+                            borderColor: colors.success,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Ventas (€)'
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error cargando gráfico de ventas por categorías:', error);
+            }
+        }
+
+        // Gráfico de Estados de Pedidos
+        async function cargarGraficoEstadosPedidos() {
+            try {
+                const response = await fetch('@Url.Action("GetEstadosPedidos", "Reportes")');
+                const data = await response.json();
+                
+                const ctx = document.getElementById('chartEstadosPedidos').getContext('2d');
+                chartEstados = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.estados,
+                        datasets: [{
+                            data: data.cantidades,
+                            backgroundColor: [
+                                colors.success,
+                                colors.info,
+                                colors.warning,
+                                colors.danger,
+                                colors.secondary
+                            ],
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error cargando gráfico de estados de pedidos:', error);
+            }
+        }
+
+        // Tabla de Análisis de Clientes
+        async function cargarAnalisisClientes() {
+            try {
+                const response = await fetch('@Url.Action("GetAnalisisClientes", "Reportes")');
+                const clientes = await response.json();
+                
+                const tbody = document.querySelector('#tabla-mejores-clientes tbody');
+                tbody.innerHTML = '';
+                
+                if (clientes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center">No hay datos disponibles</td></tr>';
+                    return;
+                }
+                
+                clientes.forEach((cliente, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${cliente.email}</td>
+                        <td><span class="badge bg-primary">${cliente.totalPedidos}</span></td>
+                        <td><strong>${new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(cliente.totalGastado)}</strong></td>
+                        <td>${new Date(cliente.ultimaCompra).toLocaleDateString('es-ES')}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error cargando análisis de clientes:', error);
+            }
+        }
+    </script>
+}

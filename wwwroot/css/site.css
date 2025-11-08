@@ -86,3 +86,50 @@ footer {
   background-color: #d9b89a !important;
   color: #3b2f2f !important;
 }
+
+/* Badge de notificación con animación de pulso */
+.badge-notificacion {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #dc3545 !important;
+  animation: pulso 2s infinite;
+}
+
+.badge-notificacion.pulso-notificacion {
+  animation: pulso 1.5s ease-in-out infinite;
+}
+
+@keyframes pulso {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+/* Estilos para el panel de reportes */
+.card.bg-primary, .card.bg-success, .card.bg-info, .card.bg-warning {
+  border: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.card.bg-warning h2, .card.bg-warning h6 {
+  color: #3b2f2f !important;
+}
+
+.opacity-50 {
+  opacity: 0.5;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(139, 94, 60, 0.05);
+}

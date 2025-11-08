@@ -13,7 +13,7 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="/images/logo-bread.png" alt="DePan" style="height:36px; margin-right:8px;" />
+                    <i class="fas fa-bread-slice" style="font-size:2rem; color:#7a4e31; margin-right:8px;"></i>
                     <div>
                         <div style="line-height:1; font-size:1.05rem;">DePan</div>
                         <small style="font-size:0.65rem; color:#7a4e31;">Panadería artesanal</small>
@@ -34,17 +34,18 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="TestDb" asp-action="Index">Test DB</a>
-                        </li>
                     </ul>
                     <ul class="navbar-nav">
                         @if (Context.Request.Cookies["jwt"] != null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Carrito" asp-action="Index">
+                                <a class="nav-link text-dark position-relative" asp-controller="Carrito" asp-action="Index">
                                     <i class="fas fa-shopping-cart"></i> Carrito
                                     <span class="contador-carrito badge bg-primary rounded-pill">0</span>
+                                    <span class="badge-notificacion position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" style="display:none;">
+                                        <i class="fas fa-exclamation" style="font-size: 8px;"></i>
+                                        <span class="visually-hidden">Alerta de expiración</span>
+                                    </span>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -60,6 +61,10 @@
                                     <ul class="dropdown-menu">
                                         <li><a class="dropdown-item" asp-controller="Productos" asp-action="Admin">Productos</a></li>
                                         <li><a class="dropdown-item" asp-controller="Pedidos" asp-action="Admin">Pedidos</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" asp-controller="Reportes" asp-action="Index">
+                                            <i class="fas fa-chart-line"></i> Reportes
+                                        </a></li>
                                     </ul>
                                 </li>
                             }
@@ -103,7 +108,14 @@
     <script>
         // Cargar cantidad de items en el carrito al iniciar la página
         document.addEventListener('DOMContentLoaded', function() {
-            cargarContadorCarrito();
+            @if (Context.Request.Cookies["jwt"] != null)
+            {
+                @:cargarContadorCarrito();
+                @:verificarExpiracionCarrito();
+                @:
+                @:// Verificar expiración cada 10 segundos
+                @:setInterval(verificarExpiracionCarrito, 10000);
+            }
         });
 
         async function cargarContadorCarrito() {
@@ -120,12 +132,59 @@
             }
         }
 
+        async function verificarExpiracionCarrito() {
+            try {
+                // Primero verificar si hay una notificación de expiración activa en localStorage
+                var notificacionData = localStorage.getItem('carrito_expirado');
+                if (notificacionData) {
+                    var data = JSON.parse(notificacionData);
+                    var ahora = new Date().getTime();
+                    var tiempoTranscurrido = ahora - data.timestamp;
+                    var DURACION_NOTIFICACION = 3 * 60 * 1000; // 3 minutos
+                    
+                    // Si hay notificación activa, mostrar el badge
+                    if (tiempoTranscurrido < DURACION_NOTIFICACION) {
+                        const badgeNotificacion = document.querySelector('.badge-notificacion');
+                        if (badgeNotificacion) {
+                            badgeNotificacion.style.display = 'inline-block';
+                            badgeNotificacion.classList.add('pulso-notificacion');
+                        }
+                        return; // No consultar el endpoint si ya hay notificación activa
+                    } else {
+                        // Limpiar si ya pasó el tiempo
+                        localStorage.removeItem('carrito_expirado');
+                    }
+                }
+                
+                // Luego verificar si hay productos próximos a expirar
+                const response = await fetch('@Url.Action("CheckExpiracion", "Carrito")');
+                if (!response.ok) return;
+                
+                const result = await response.json();
+                
+                const badgeNotificacion = document.querySelector('.badge-notificacion');
+                if (badgeNotificacion) {
+                    if (result.tieneAlerta) {
+                        badgeNotificacion.style.display = 'inline-block';
+                        badgeNotificacion.classList.add('pulso-notificacion');
+                    } else {
+                        badgeNotificacion.style.display = 'none';
+                        badgeNotificacion.classList.remove('pulso-notificacion');
+                    }
+                }
+            } catch (error) {
+                console.error('Error verificando expiración del carrito:', error);
+            }
+        }
+
         // Función global para actualizar contador (usada desde otras páginas)
         function actualizarContadorCarrito(totalItems) {
             const contador = document.querySelector('.contador-carrito');
             if (contador) {
                 contador.textContent = totalItems;
             }
+            // También verificar la expiración al actualizar el carrito
+            verificarExpiracionCarrito();
         }
     </script>
 

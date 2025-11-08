@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DePan")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fb96e3959784ac9bba65e202b4b03beafc1db450")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+026db5323bd2d77453da50f164b5151487c1e4e1")]
 [assembly: System.Reflection.AssemblyProductAttribute("DePan")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DePan")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
