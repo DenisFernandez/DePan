@@ -138,6 +138,8 @@ Semana 6 (05/11/2025 - 11/11/2025)
      ✅ Eliminada la vista de Test DB porque ya no es necesaria. (era solamente para pruebas).
 
      ✅ Actualizada la vista de "Mis Pedidos" con la información a tiempo real de cada pedido y en qué estado se encuenta.
+
+     ✅ Añadido el script de generación .sql de la base de datos actualizada en la carpeta /database.
      
      ✅ Corregido un error que, al intentar cambiar el estado de un pedido desde la vista de amdministradores no dejaba cambiarlo.
          -Prompt enviado a la IA para solucionar el problema: Tengo errores en el panel de administración al modificar el estado de un pedido,
