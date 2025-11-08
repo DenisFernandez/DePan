@@ -103,7 +103,7 @@ Semana 4 (20/10/2025 - 27/10/2025)
     Solución de problemas de roles (mayúsculas/minúsculas).
     Configuración correcta de cookies JWT.
 
-Semana 5 (28/10/2025 - 04/10/2025)
+Semana 5 (28/10/2025 - 04/11/2025)
 
      ✅ Implementación del carrito de Compras.
       Controladores, vistas y modelos añadidos
@@ -121,6 +121,34 @@ Semana 5 (28/10/2025 - 04/10/2025)
      ✅ Correción de problemas relacionados al stock y su actualización en tiempo real.
      (Los problemas y soluciones vienen detallados en el commit de esta semana).
 
+Semana 6 (05/11/2025 - 11/11/2025)
+
+     ✅ Expiración de reservas: Cada 5 minutos el se buscan carritos con más de 30 minutos sin confirmar el pedido y libera el stock del producto que han seleccionado.
+
+     ✅ Notificaciones visuales:
+        En la vista del carrito aparecerán advertencias cuando queden menos de 15 minutos.
+        Aparecerá un puntito rojo a modo de notificación encima del icono del carrito cuando haya productos en el carrito que estén próximos a expirar y ser liberados.
+        Cuando los productos hayan expirado del carrito y sean liberados también se le informará al usuario con una notificación dentro de la vista del carrito "Tus productos expiraron", además 
+        se mantendrá el putito rojo encima del carrito durante 3 minutos o cuando el usuario le de a la "x" a la notificación.
+        
+     ✅ Implementación de una vista solamente para administradores en la que pueden consultar gráficas de los productos más vendidos y diferentes datos de utilidad sobre pedidos y su actual estado.
+
+     ✅ Modificada la vista de administración de pedidos, añadí la función de poder eliminar productos.
+     
+     ✅ Eliminada la vista de Test DB porque ya no es necesaria. (era solamente para pruebas).
+
+     ✅ Actualizada la vista de "Mis Pedidos" con la información a tiempo real de cada pedido y en qué estado se encuenta.
+     
+     ✅ Corregido un error que, al intentar cambiar el estado de un pedido desde la vista de amdministradores no dejaba cambiarlo.
+         -Prompt enviado a la IA para solucionar el problema: Tengo errores en el panel de administración al modificar el estado de un pedido,
+         me salta un mensaje de alerta de localhost: Error: Error al actualizar estado.
+         
+         -Solución: 
+          Creada clase ActualizarEstadoRequest para recibir el JSON.
+          Añadida validación de datos antes de procesar: Verifica que request no sea null,  que PedidoId sea válido, que NuevoEstado no esté vacío.
+          Eliminado el token antiforgery innecesario.
+         
+      
      
 ## 🚀 Instalación y Ejecución
 # Clonar el repositorio
