@@ -149,10 +149,22 @@ Semana 6 (05/11/2025 - 11/11/2025)
           Creada clase ActualizarEstadoRequest para recibir el JSON.
           Añadida validación de datos antes de procesar: Verifica que request no sea null,  que PedidoId sea válido, que NuevoEstado no esté vacío.
           Eliminado el token antiforgery innecesario.
-         
-      
+          
+Periodo Final de Entrega (11/11/2025 - 14/11/2025)
+
+     ✅ Cambios en la estética para el header y el footer, añadí iconos, efectos hover al pasar por encima de los encabezados, footer con enlaces al resto de las vistas.
+
+     ✅ Creación de un logo personalizado (logo-pan.svg) para el header al lado de DePan.
+        
+     ✅ Añadí la vista de Quiénes Somos, en la cual añadi varios miembros del equipo de la panadería en formato "cards", integración de google maps con la ubicación física de la panadería y mapa interactivo dentro de la vista. También añadí una sección debajo de la ubicación con 3 reseñas directamente sacadas de google maps y con un botón que te lleva a todas las reseñas en google maps reviews.
      
-## 🚀 Instalación y Ejecución
+     ✅ Añadí información útil (detalles del pedido y de a que email se ha enviado el correo de confirmación de pedido) después de confirmar un pedido a la misma vista.
+     
+     ✅ Añadí que se enviara después de que el usuario realizase un pedido, una confirmación por email de los detalles del mismo. El email al que se envía el correo es el mismo con el que se registra el usuario. Para ello utilicé el servicio EmailService con MailKit 4.14.1 y el protocolo SMTP de gamil con TLS (smtp.gmail.com:587). Paquete NuGet necesario: MailKit 4.14.1 , la integración del servicio de correo se ha hecho en PedidosController.cs
+
+     ✅ Corregido un problema a la hora de enviar emails: directamente no se enviaba el correo, investigué preguntándole a la IA y es porque necesitaba tener activada la verificación en 2 pasos desde la cuenta de correo (gmail en este caso) desde la que quiero enviar los correos.
+     
+
 # Clonar el repositorio
 git clone https://github.com/DenisFernandez/DePan.git
 
