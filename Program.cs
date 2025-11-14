@@ -55,6 +55,7 @@ builder.Services.AddScoped<ProductoService>();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<CarritoService>();
 builder.Services.AddScoped<PedidoService>();
+builder.Services.AddScoped<EmailService>();
 
 // Registrar servicio de limpieza automática de carritos
 builder.Services.AddHostedService<CarritoCleanupService>();

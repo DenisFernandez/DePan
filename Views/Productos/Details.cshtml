@@ -58,7 +58,12 @@
             </div>
 
             <div class="mt-4">
-                <a href="@Url.Action("Index")" class="btn btn-secondary">Volver al Catálogo</a>
+                <a href="@Url.Action("Index")" class="btn btn-outline-secondary me-2" style="border-color: #7a4e31; color: #7a4e31; transition: all 0.3s;" onmouseover="this.style.backgroundColor='#7a4e31'; this.style.color='white'" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#7a4e31'">
+                    <i class="fas fa-arrow-left me-1"></i> Volver al Catálogo
+                </a>
+                <a href="@Url.Action("Index", "Carrito")" class="btn btn-outline-primary" style="border-color: #d4a574; color: #7a4e31; transition: all 0.3s;" onmouseover="this.style.backgroundColor='#d4a574'; this.style.color='white'" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#7a4e31'">
+                    <i class="fas fa-shopping-cart me-1"></i> Ir al Carrito
+                </a>
             </div>
         </div>
     </div>

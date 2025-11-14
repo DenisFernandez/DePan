@@ -11,11 +11,13 @@ namespace DePan.Controllers
     {
         private readonly PedidoService _pedidoService;
         private readonly CarritoService _carritoService;
+        private readonly EmailService _emailService;
 
-        public PedidosController(PedidoService pedidoService, CarritoService carritoService)
+        public PedidosController(PedidoService pedidoService, CarritoService carritoService, EmailService emailService)
         {
             _pedidoService = pedidoService;
             _carritoService = carritoService;
+            _emailService = emailService;
         }
 
         // GET: /Pedidos/MisPedidos
@@ -97,6 +99,17 @@ namespace DePan.Controllers
 
                 if (pedido != null)
                 {
+                    // Enviar correo de confirmación
+                    try
+                    {
+                        await _emailService.EnviarCorreoConfirmacionPedidoAsync(pedido, pedido.IdUsuarioClienteNavigation);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log el error pero no fallar el pedido
+                        Console.WriteLine($"Error enviando correo: {ex.Message}");
+                    }
+
                     return RedirectToAction("Confirmacion", new { id = pedido.IdPedido });
                 }
 

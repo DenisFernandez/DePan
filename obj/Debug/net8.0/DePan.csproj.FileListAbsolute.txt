@@ -230,3 +230,8 @@ D:\Denis\Escritorio\Denis TFG\DePan\obj\Debug\net8.0\refint\DePan.dll
 D:\Denis\Escritorio\Denis TFG\DePan\obj\Debug\net8.0\DePan.pdb
 D:\Denis\Escritorio\Denis TFG\DePan\obj\Debug\net8.0\DePan.genruntimeconfig.cache
 D:\Denis\Escritorio\Denis TFG\DePan\obj\Debug\net8.0\ref\DePan.dll
+D:\Denis\Escritorio\Denis TFG\DePan\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+D:\Denis\Escritorio\Denis TFG\DePan\bin\Debug\net8.0\MailKit.dll
+D:\Denis\Escritorio\Denis TFG\DePan\bin\Debug\net8.0\MimeKit.dll
+D:\Denis\Escritorio\Denis TFG\DePan\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\Denis\Escritorio\Denis TFG\DePan\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll

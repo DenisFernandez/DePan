@@ -4,55 +4,84 @@
     ViewData["Title"] = "Pedido Confirmado";
 }
 
-<div class="container">
+<div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <div class="card border-success">
-                <div class="card-header bg-success text-white">
-                    <h2 class="mb-0">¡Pedido Confirmado!</h2>
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow-lg border-0" style="border-top: 5px solid #28a745;">
+                <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #28a745, #20c997); color: white;">
+                    <i class="fas fa-check-circle fa-4x mb-3"></i>
+                    <h2 class="mb-0 fw-bold">¡Pedido Confirmado!</h2>
                 </div>
-                <div class="card-body">
-                    <i class="fas fa-check-circle text-success fa-5x mb-4"></i>
-                    
-                    <h3 class="text-success mb-3">Gracias por tu compra</h3>
-                    
-                    <div class="alert alert-info">
-                        <h5>Número de Pedido: <strong>@Model.NumeroPedido</strong></h5>
-                        <p class="mb-0">Hemos enviado un correo de confirmación con los detalles de tu pedido.</p>
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <h4 class="text-success mb-3">Gracias por tu compra</h4>
+                        
+                        <div class="alert" style="background-color: #e7f5ff; border-left: 4px solid #0056b3;">
+                            <h5 class="mb-2"><strong>Número de Pedido: @Model.NumeroPedido</strong></h5>
+                            <p class="mb-1 text-muted">
+                                <i class="fas fa-envelope me-2"></i>
+                                Hemos enviado un correo de confirmación con los detalles de tu pedido a:
+                            </p>
+                            <p class="mb-0">
+                                <strong style="color: #0056b3;">@Model.IdUsuarioClienteNavigation.Email</strong>
+                            </p>
+                        </div>
                     </div>
 
-                    <div class="row text-start mb-4">
-                        <div class="col-md-6">
-                            <h5>Resumen del Pedido:</h5>
-                            <p><strong>Fecha:</strong> @Model.FechaPedido.ToString("dd/MM/yyyy HH:mm")</p>
-                            <p><strong>Total:</strong> @Model.Total.ToString("C")</p>
-                            <p><strong>Estado:</strong> <span class="badge bg-warning">@Model.Estado</span></p>
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100" style="background-color: #faf8f5; border: 1px solid #d4a574;">
+                                <div class="card-body">
+                                    <h6 class="card-title fw-bold" style="color: #7a4e31;">
+                                        <i class="fas fa-receipt me-2"></i>Resumen del Pedido
+                                    </h6>
+                                    <hr style="border-color: #d4a574;">
+                                    <p class="mb-2"><strong>Fecha:</strong> @Model.FechaPedido.ToString("dd/MM/yyyy HH:mm")</p>
+                                    <p class="mb-2"><strong>Total:</strong> <span class="fs-5 text-success fw-bold">@Model.Total.ToString("C")</span></p>
+                                    <p class="mb-0">
+                                        <strong>Estado:</strong> 
+                                        <span class="badge" style="background-color: #ffc107; color: #000;">@Model.Estado</span>
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <h5>Dirección de Entrega:</h5>
-                            <p>@Model.DireccionEntrega<br>
-                               @Model.CiudadEntrega, @Model.CodigoPostalEntrega<br>
-                               Tel: @Model.TelefonoContacto</p>
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100" style="background-color: #faf8f5; border: 1px solid #d4a574;">
+                                <div class="card-body">
+                                    <h6 class="card-title fw-bold" style="color: #7a4e31;">
+                                        <i class="fas fa-map-marker-alt me-2"></i>Dirección de Entrega
+                                    </h6>
+                                    <hr style="border-color: #d4a574;">
+                                    <p class="mb-1">@Model.DireccionEntrega</p>
+                                    <p class="mb-1">@Model.CiudadEntrega, @Model.CodigoPostalEntrega</p>
+                                    <p class="mb-0"><strong>Tel:</strong> @Model.TelefonoContacto</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     @if (Model.FechaEntregaEstimada.HasValue)
                     {
-                        <div class="alert alert-warning">
-                            <h6>📦 Entrega Estimada</h6>
-                            <p class="mb-0">Tu pedido llegará aproximadamente el <strong>@Model.FechaEntregaEstimada.Value.ToString("dd/MM/yyyy")</strong></p>
+                        <div class="alert alert-warning border-0 shadow-sm mb-4" style="background: linear-gradient(135deg, #fff8e1, #ffe082);">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-truck fa-2x me-3" style="color: #f57c00;"></i>
+                                <div>
+                                    <h6 class="mb-1 fw-bold">📦 Entrega Estimada</h6>
+                                    <p class="mb-0">Tu pedido llegará aproximadamente el <strong>@Model.FechaEntregaEstimada.Value.ToString("dd/MM/yyyy")</strong></p>
+                                </div>
+                            </div>
                         </div>
                     }
 
-                    <div class="d-grid gap-2 d-md-flex justify-content-center">
-                        <a href="@Url.Action("Detalles", new { id = Model.IdPedido })" class="btn btn-primary btn-lg">
-                            Ver Detalles del Pedido
+                    <div class="d-grid gap-2 d-md-flex justify-content-center mt-4">
+                        <a href="@Url.Action("Detalles", new { id = Model.IdPedido })" class="btn btn-lg px-4" style="background-color: #7a4e31; color: white; border: none; transition: all 0.3s;" onmouseover="this.style.backgroundColor='#6b4423'" onmouseout="this.style.backgroundColor='#7a4e31'">
+                            <i class="fas fa-file-invoice me-2"></i>Ver Detalles del Pedido
                         </a>
-                        <a href="@Url.Action("MisPedidos")" class="btn btn-outline-primary btn-lg">
-                            Mis Pedidos
+                        <a href="@Url.Action("MisPedidos")" class="btn btn-outline-secondary btn-lg px-4" style="border-color: #7a4e31; color: #7a4e31; transition: all 0.3s;" onmouseover="this.style.backgroundColor='#7a4e31'; this.style.color='white'" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#7a4e31'">
+                            <i class="fas fa-list me-2"></i>Mis Pedidos
                         </a>
-                        <a href="@Url.Action("Index", "Productos")" class="btn btn-outline-secondary btn-lg">
-                            Seguir Comprando
+                        <a href="@Url.Action("Index", "Productos")" class="btn btn-outline-secondary btn-lg px-4" style="border-color: #d4a574; color: #7a4e31; transition: all 0.3s;" onmouseover="this.style.backgroundColor='#d4a574'; this.style.color='white'" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#7a4e31'">
+                            <i class="fas fa-shopping-basket me-2"></i>Seguir Comprando
                         </a>
                     </div>
                 </div>
@@ -62,10 +91,10 @@
 </div>
 @section Scripts {
     <script>
-        // Limpiar notificaci�n de carrito expirado al confirmar pedido
+        // Limpiar notificaci�n de carrito expirado al confirmar pedido
         localStorage.removeItem('carrito_expirado');
         
-        // Actualizar contador del carrito (deber�a estar en 0)
+        // Actualizar contador del carrito (deber�a estar en 0)
         if (typeof actualizarContadorCarrito === 'function') {
             actualizarContadorCarrito(0);
         }

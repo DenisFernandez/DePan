@@ -30,12 +30,13 @@ CREATE TABLE IF NOT EXISTS `carrito` (
   UNIQUE KEY `uk_carrito_usuario` (`id_usuario`),
   KEY `idx_usuario` (`id_usuario`),
   CONSTRAINT `carrito_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla depan_db.carrito: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla depan_db.carrito: ~0 rows (aproximadamente)
 INSERT INTO `carrito` (`id_carrito`, `id_usuario`, `fecha_creacion`, `fecha_actualizacion`, `total`) VALUES
 	(1, 5, '2025-11-01 09:59:18', '2025-11-08 13:49:33', 0.00),
-	(2, 4, '2025-11-08 13:39:28', '2025-11-08 15:03:55', 0.00);
+	(2, 4, '2025-11-08 13:39:28', '2025-11-14 12:26:53', 0.00),
+	(3, 7, '2025-11-14 12:16:25', '2025-11-14 12:16:39', 0.00);
 
 -- Volcando estructura para tabla depan_db.categoria
 CREATE TABLE IF NOT EXISTS `categoria` (
@@ -70,9 +71,9 @@ CREATE TABLE IF NOT EXISTS `linea_carrito` (
   KEY `idx_producto` (`id_producto`),
   CONSTRAINT `linea_carrito_ibfk_1` FOREIGN KEY (`id_carrito`) REFERENCES `carrito` (`id_carrito`) ON DELETE CASCADE,
   CONSTRAINT `linea_carrito_ibfk_2` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla depan_db.linea_carrito: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla depan_db.linea_carrito: ~1 rows (aproximadamente)
 
 -- Volcando estructura para tabla depan_db.linea_pedido
 CREATE TABLE IF NOT EXISTS `linea_pedido` (
@@ -88,9 +89,20 @@ CREATE TABLE IF NOT EXISTS `linea_pedido` (
   KEY `idx_producto` (`id_producto`),
   CONSTRAINT `linea_pedido_ibfk_1` FOREIGN KEY (`id_pedido`) REFERENCES `pedido` (`id_pedido`) ON DELETE CASCADE,
   CONSTRAINT `linea_pedido_ibfk_2` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcando datos para la tabla depan_db.linea_pedido: ~0 rows (aproximadamente)
+INSERT INTO `linea_pedido` (`id_linea_pedido`, `id_pedido`, `id_producto`, `nombre_producto`, `cantidad`, `precio_unitario`, `subtotal`) VALUES
+	(1, 13, 2, 'Pan Integral', 1, 1.80, 1.80),
+	(2, 14, 5, 'Napolitana de Chocolate', 1, 1.80, 1.80),
+	(3, 15, 4, 'Croissant', 2, 1.50, 3.00),
+	(4, 16, 2, 'Pan Integral', 2, 1.80, 3.60),
+	(5, 17, 9, 'Pastel de Nata', 2, 6.50, 13.00),
+	(6, 18, 9, 'Pastel de Nata', 1, 6.50, 6.50),
+	(7, 19, 8, 'Tarta de Chocolate', 1, 18.00, 18.00),
+	(8, 20, 7, 'Tarta de Santiago', 2, 15.00, 30.00),
+	(9, 20, 1, 'Barra de Pan Gallega', 2, 1.20, 2.40),
+	(10, 20, 9, 'Pastel de Nata', 2, 6.50, 13.00);
 
 -- Volcando estructura para tabla depan_db.pedido
 CREATE TABLE IF NOT EXISTS `pedido` (
@@ -119,9 +131,9 @@ CREATE TABLE IF NOT EXISTS `pedido` (
   KEY `idx_numero_pedido` (`numero_pedido`),
   CONSTRAINT `pedido_ibfk_1` FOREIGN KEY (`id_usuario_cliente`) REFERENCES `usuario` (`id_usuario`),
   CONSTRAINT `pedido_ibfk_2` FOREIGN KEY (`id_repartidor`) REFERENCES `usuario` (`id_usuario`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla depan_db.pedido: ~8 rows (aproximadamente)
+-- Volcando datos para la tabla depan_db.pedido: ~9 rows (aproximadamente)
 INSERT INTO `pedido` (`id_pedido`, `id_usuario_cliente`, `id_repartidor`, `numero_pedido`, `fecha_pedido`, `subtotal`, `gastos_envio`, `total`, `estado`, `direccion_entrega`, `ciudad_entrega`, `codigo_postal_entrega`, `telefono_contacto`, `notas`, `fecha_entrega_estimada`, `fecha_entrega_real`) VALUES
 	(1, 5, NULL, 'DP-20251101-6B7745FC', '2025-11-01 09:59:50', 1.50, 2.50, 4.00, 'entregado', 'Lugar Montalvo 18', 'Montalvo', '36960', '606877792', 'Dejar en la puerta y timbrar.', '2025-11-03 09:59:50', '2025-11-08 14:48:36'),
 	(2, 5, NULL, 'DP-20251101-F02CB3D2', '2025-11-01 10:00:02', 1.50, 2.50, 4.00, 'cancelado', 'Lugar Montalvo 18', 'Montalvo', '36960', '606877792', 'Dejar en la puerta y timbrar.', '2025-11-03 10:00:02', NULL),
@@ -130,7 +142,17 @@ INSERT INTO `pedido` (`id_pedido`, `id_usuario_cliente`, `id_repartidor`, `numer
 	(5, 4, NULL, 'DP-20251108-FCB94D29', '2025-11-08 14:31:54', 6.00, 2.50, 8.50, 'preparando', 'Lugar Montalvo 18', 'Montalvo', '36960', '60687792', NULL, '2025-11-10 14:31:54', NULL),
 	(6, 4, NULL, 'DP-20251108-2FD07B7A', '2025-11-08 14:49:18', 6.00, 2.50, 8.50, 'enviado', 'Lugar Montalvo 18', 'Montalvo', '36960', '60687792', NULL, '2025-11-10 14:49:18', NULL),
 	(7, 4, NULL, 'DP-20251108-C953F0D4', '2025-11-08 14:53:29', 6.00, 2.50, 8.50, 'entregado', 'Lugar Montalvo 18', 'Montalvo', '36960', '60687792', NULL, '2025-11-10 14:53:29', '2025-11-08 14:58:57'),
-	(8, 4, NULL, 'DP-20251108-ED98E818', '2025-11-08 14:59:49', 4.50, 2.50, 7.00, 'pendiente', 'Lugar Montalvo 18', 'Montalvo', '36960', '60687792', NULL, '2025-11-10 14:59:49', NULL);
+	(8, 4, NULL, 'DP-20251108-ED98E818', '2025-11-08 14:59:49', 4.50, 2.50, 7.00, 'pendiente', 'Lugar Montalvo 18', 'Montalvo', '36960', '60687792', NULL, '2025-11-10 14:59:49', NULL),
+	(11, 4, NULL, 'DP-20251114-E5D44E0D', '2025-11-14 11:17:28', 1.50, 2.50, 4.00, 'pendiente', 'Lugar Montalvo 18', 'Montalvo', '36960', '60687792', NULL, '2025-11-16 11:17:28', NULL),
+	(12, 4, NULL, 'DP-20251114-CD604382', '2025-11-14 11:20:29', 7.00, 2.50, 9.50, 'pendiente', 'Lugar Montalvo 18', 'Montalvo', '36960', '60687792', NULL, '2025-11-16 11:20:29', NULL),
+	(13, 4, NULL, 'DP-20251114-C19F969A', '2025-11-14 11:27:36', 1.80, 2.50, 4.30, 'pendiente', 'Lugar Montalvo 18', 'Montalvo', '36960', '60687792', NULL, '2025-11-16 11:27:36', NULL),
+	(14, 4, NULL, 'DP-20251114-B6FD6F3E', '2025-11-14 11:33:57', 1.80, 2.50, 4.30, 'pendiente', 'Lugar Montalvo 18', 'Montalvo', '36960', '60687792', NULL, '2025-11-16 11:33:57', NULL),
+	(15, 4, NULL, 'DP-20251114-DA428CFC', '2025-11-14 11:51:29', 3.00, 2.50, 5.50, 'pendiente', 'Lugar Montalvo 18', 'Montalvo', '36960', '60687792', NULL, '2025-11-16 11:51:29', NULL),
+	(16, 4, NULL, 'DP-20251114-99156EAD', '2025-11-14 12:00:05', 3.60, 2.50, 6.10, 'pendiente', 'Lugar Montalvo 18', 'Montalvo', '36960', '60687792', 'aaa', '2025-11-16 12:00:05', NULL),
+	(17, 4, NULL, 'DP-20251114-6414F10B', '2025-11-14 12:01:30', 13.00, 2.50, 15.50, 'pendiente', 'Lugar Montalvo 18', 'Montalvo', '36960', '60687792', 'aaa', '2025-11-16 12:01:30', NULL),
+	(18, 4, NULL, 'DP-20251114-B45E6EE8', '2025-11-14 12:14:52', 6.50, 2.50, 9.00, 'pendiente', 'Lugar Montalvo 18', 'Montalvo', '36960', '60687792', NULL, '2025-11-16 12:14:52', NULL),
+	(19, 7, NULL, 'DP-20251114-76923505', '2025-11-14 12:16:39', 18.00, 2.50, 20.50, 'pendiente', 'Lugar Montalvo 134', 'Montalvo', '36960', '60687792', 'En la puerta', '2025-11-16 12:16:39', NULL),
+	(20, 4, NULL, 'DP-20251114-B7A5F10E', '2025-11-14 12:26:53', 45.40, 2.50, 47.90, 'pendiente', 'Lugar Montalvo 18', 'Montalvo', '36960', '60687792', NULL, '2025-11-16 12:26:53', NULL);
 
 -- Volcando estructura para tabla depan_db.producto
 CREATE TABLE IF NOT EXISTS `producto` (
@@ -154,15 +176,15 @@ CREATE TABLE IF NOT EXISTS `producto` (
 
 -- Volcando datos para la tabla depan_db.producto: ~9 rows (aproximadamente)
 INSERT INTO `producto` (`id_producto`, `id_categoria`, `nombre`, `descripcion`, `precio`, `imagen_url`, `stock`, `disponible`, `fecha_creacion`, `fecha_actualizacion`) VALUES
-	(1, 1, 'Barra de Pan Gallega', 'Pan tradicional gallego de 500g', 1.20, '/images/pan-gallego.jpg', 50, 1, '2025-10-20 22:19:28', '2025-10-20 22:19:28'),
-	(2, 1, 'Pan Integral', 'Pan integral con semillas de 400g', 1.80, '/images/pan-integral.jpg', 30, 1, '2025-10-20 22:19:28', '2025-10-20 22:19:28'),
-	(3, 1, 'Hogaza Rústica', 'Hogaza artesanal de masa madre 800g', 3.50, '/images/hogaza.jpg', 20, 1, '2025-10-20 22:19:28', '2025-11-08 13:49:33'),
-	(4, 2, 'Croissant', 'Croissant de mantequilla', 1.50, '/images/croissant.jpg', 34, 1, '2025-10-20 22:19:28', '2025-11-08 15:03:55'),
-	(5, 2, 'Napolitana de Chocolate', 'Napolitana rellena de chocolate', 1.80, '/images/napolitana.jpg', 35, 1, '2025-10-20 22:19:28', '2025-10-20 22:19:28'),
-	(6, 2, 'Ensaimada', 'Ensaimada tradicional mallorquina', 2.20, '/images/ensaimada.jpg', 25, 0, '2025-10-20 22:19:28', '2025-10-27 23:33:33'),
-	(7, 3, 'Tarta de Santiago', 'Tarta de almendra tradicional gallega', 15.00, '/images/tarta-santiago.jpg', 10, 1, '2025-10-20 22:19:28', '2025-10-20 22:19:28'),
-	(8, 3, 'Tarta de Chocolate', 'Tarta de chocolate con cobertura de cacao', 18.00, '/images/tarta-chocolate.jpg', 8, 1, '2025-10-20 22:19:28', '2025-10-20 22:19:28'),
-	(9, 3, 'Pastel de Nata', 'Pastel de nata portugués (6 unidades)', 6.50, '/images/pastel-nata.jpg', 30, 1, '2025-10-20 22:19:28', '2025-10-20 22:19:28');
+	(1, 1, 'Barra de Pan Gallega', 'Pan tradicional gallego de 500g', 1.20, 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800', 48, 1, '2025-10-20 22:19:28', '2025-11-14 12:26:41'),
+	(2, 1, 'Pan Integral', 'Pan integral con semillas de 400g', 1.80, 'https://images.unsplash.com/photo-1589367920969-ab8e050bbb04?w=800', 27, 1, '2025-10-20 22:19:28', '2025-11-14 11:59:52'),
+	(3, 1, 'Hogaza Rústica', 'Hogaza artesanal de masa madre 800g', 3.50, 'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=800', 20, 1, '2025-10-20 22:19:28', '2025-11-14 11:22:40'),
+	(4, 2, 'Croissant', 'Croissant de mantequilla', 1.50, 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=800', 32, 1, '2025-10-20 22:19:28', '2025-11-14 11:51:20'),
+	(5, 2, 'Napolitana de Chocolate', 'Napolitana rellena de chocolate', 1.80, 'https://melisabakehouse.com/wp-content/uploads/2025/03/Napolitana-de-chocolate.jpg', 34, 1, '2025-10-20 22:19:28', '2025-11-14 11:33:37'),
+	(6, 2, 'Ensaimada', 'Ensaimada tradicional mallorquina', 2.20, 'https://images.unsplash.com/photo-1590348294038-e16efaa8aaee?w=800', 25, 0, '2025-10-20 22:19:28', '2025-11-14 10:10:51'),
+	(7, 3, 'Tarta de Santiago', 'Tarta de almendra tradicional gallega', 15.00, 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Tarta_de_Santiago-2010.jpg/1200px-Tarta_de_Santiago-2010.jpg', 8, 1, '2025-10-20 22:19:28', '2025-11-14 12:26:37'),
+	(8, 3, 'Tarta de Chocolate', 'Tarta de chocolate con cobertura de cacao', 18.00, 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800', 7, 1, '2025-10-20 22:19:28', '2025-11-14 12:16:25'),
+	(9, 3, 'Pastel de Nata', 'Pastel de nata portugués (6 unidades)', 6.50, 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=800', 25, 1, '2025-10-20 22:19:28', '2025-11-14 12:26:44');
 
 -- Volcando estructura para tabla depan_db.seguimiento_pedido
 CREATE TABLE IF NOT EXISTS `seguimiento_pedido` (
@@ -178,9 +200,9 @@ CREATE TABLE IF NOT EXISTS `seguimiento_pedido` (
   KEY `idx_estado` (`estado`),
   KEY `idx_fecha_estado` (`fecha_estado`),
   CONSTRAINT `seguimiento_pedido_ibfk_1` FOREIGN KEY (`id_pedido`) REFERENCES `pedido` (`id_pedido`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla depan_db.seguimiento_pedido: ~15 rows (aproximadamente)
+-- Volcando datos para la tabla depan_db.seguimiento_pedido: ~17 rows (aproximadamente)
 INSERT INTO `seguimiento_pedido` (`id_seguimiento`, `id_pedido`, `estado`, `fecha_estado`, `observaciones`, `latitud`, `longitud`) VALUES
 	(1, 1, 'pendiente', '2025-11-01 09:59:50', 'Pedido creado', NULL, NULL),
 	(2, 2, 'pendiente', '2025-11-01 10:00:02', 'Pedido creado', NULL, NULL),
@@ -196,7 +218,17 @@ INSERT INTO `seguimiento_pedido` (`id_seguimiento`, `id_pedido`, `estado`, `fech
 	(12, 7, 'pendiente', '2025-11-08 14:53:29', 'Pedido creado', NULL, NULL),
 	(13, 6, 'enviado', '2025-11-08 14:58:49', 'Estado cambiado de pendiente a enviado', NULL, NULL),
 	(14, 7, 'entregado', '2025-11-08 14:58:57', 'Estado cambiado de pendiente a entregado', NULL, NULL),
-	(15, 8, 'pendiente', '2025-11-08 14:59:49', 'Pedido creado', NULL, NULL);
+	(15, 8, 'pendiente', '2025-11-08 14:59:49', 'Pedido creado', NULL, NULL),
+	(18, 11, 'pendiente', '2025-11-14 11:17:28', 'Pedido creado', NULL, NULL),
+	(19, 12, 'pendiente', '2025-11-14 11:20:29', 'Pedido creado', NULL, NULL),
+	(20, 13, 'pendiente', '2025-11-14 11:27:36', 'Pedido creado', NULL, NULL),
+	(21, 14, 'pendiente', '2025-11-14 11:33:57', 'Pedido creado', NULL, NULL),
+	(22, 15, 'pendiente', '2025-11-14 11:51:29', 'Pedido creado', NULL, NULL),
+	(23, 16, 'pendiente', '2025-11-14 12:00:05', 'Pedido creado', NULL, NULL),
+	(24, 17, 'pendiente', '2025-11-14 12:01:30', 'Pedido creado', NULL, NULL),
+	(25, 18, 'pendiente', '2025-11-14 12:14:52', 'Pedido creado', NULL, NULL),
+	(26, 19, 'pendiente', '2025-11-14 12:16:39', 'Pedido creado', NULL, NULL),
+	(27, 20, 'pendiente', '2025-11-14 12:26:53', 'Pedido creado', NULL, NULL);
 
 -- Volcando estructura para procedimiento depan_db.sp_crear_pedido_desde_carrito
 DELIMITER //
@@ -278,7 +310,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   KEY `idx_email` (`email`),
   KEY `idx_rol` (`rol`),
   KEY `idx_activo` (`activo`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcando datos para la tabla depan_db.usuario: ~5 rows (aproximadamente)
 INSERT INTO `usuario` (`id_usuario`, `email`, `password_hash`, `nombre`, `apellidos`, `telefono`, `direccion`, `ciudad`, `codigo_postal`, `rol`, `fecha_registro`, `activo`) VALUES
@@ -287,7 +319,8 @@ INSERT INTO `usuario` (`id_usuario`, `email`, `password_hash`, `nombre`, `apelli
 	(3, 'cliente@ejemplo.com', '$2a$11$ejemplo_hash_bcrypt', 'María', 'García López', '655444333', 'Calle Ejemplo 123', 'Vigo', '36201', 'cliente', '2025-10-20 22:19:28', 1),
 	(4, 'denisfernandezcastro12@gmail.com', 'bKE9UspwyIPg8LsQHkJaiehiTeUdstI5JZOvaoQRgJA=', 'Denis', 'Fernández Castro', '606877792', 'Lugar Montalvo 8', 'Pontevedra', '36969', 'administrador', '2025-10-20 22:20:31', 1),
 	(5, 'denisfernandezcastro123@gmail.com', 'bKE9UspwyIPg8LsQHkJaiehiTeUdstI5JZOvaoQRgJA=', 'Denis', 'Fernández Castro', '606877792', 'Lugar Montalvo 8', 'Pontevedra', '36969', 'cliente', '2025-10-20 22:20:48', 1),
-	(6, 'denisfernandezcastro1234@gmail.com', 'bKE9UspwyIPg8LsQHkJaiehiTeUdstI5JZOvaoQRgJA=', 'Denis', 'Fernández Castro', '606877792', 'Lugar Montalvo 8', 'Pontevedra', '36969', 'cliente', '2025-10-20 22:22:47', 1);
+	(6, 'denisfernandezcastro1234@gmail.com', 'bKE9UspwyIPg8LsQHkJaiehiTeUdstI5JZOvaoQRgJA=', 'Denis', 'Fernández Castro', '606877792', 'Lugar Montalvo 8', 'Pontevedra', '36969', 'cliente', '2025-10-20 22:22:47', 1),
+	(7, 'alexiafeernandez1234@gmail.com', 'bKE9UspwyIPg8LsQHkJaiehiTeUdstI5JZOvaoQRgJA=', 'Alexia', 'Fernández Losper', '+34 671886461', 'Lugar Montalvo 12', 'Pontevedra', '36969', 'cliente', '2025-11-14 12:16:17', 1);
 
 -- Volcando estructura para tabla depan_db.valoracion
 CREATE TABLE IF NOT EXISTS `valoracion` (

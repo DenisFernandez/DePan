@@ -4,11 +4,17 @@
 
 <div class="text-center">
     <h1 class="display-4">Bienvenido a DePan</h1>
-    <p>Tu sistema de gestión para panaderías</p>
+    <p class="lead">Tu panadería artesanal de confianza</p>
+    
+    <div class="my-4">
+        <a href="@Url.Action("Index", "Productos")" class="btn btn-lg btn-primary">
+            <i class="fas fa-shopping-basket"></i> Ver Catálogo de Productos
+        </a>
+    </div>
     
     @if (Context.Request.Cookies["jwt"] != null)
     {
-        <div class="alert alert-success">
+        <div class="alert alert-success mt-4">
             <h4>¡Has iniciado sesión!</h4>
             <p>Bienvenido de vuelta a DePan.</p>
         </div>

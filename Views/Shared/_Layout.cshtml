@@ -10,38 +10,46 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-light" style="background: linear-gradient(to bottom, #ffffff 0%, #faf8f5 100%); border-bottom: 3px solid #d4a574; box-shadow: 0 2px 8px rgba(122, 78, 49, 0.1); padding: 1rem 0;">
             <div class="container">
-                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-bread-slice" style="font-size:2rem; color:#7a4e31; margin-right:8px;"></i>
-                    <div>
-                        <div style="line-height:1; font-size:1.05rem;">DePan</div>
-                        <small style="font-size:0.65rem; color:#7a4e31;">Panadería artesanal</small>
-                    </div>
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index" style="transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <img src="~/images/logo-pan.svg" alt="Logo DePan" style="width:50px; height:25px; margin-right:12px;">
+                    <div style="line-height:1; font-size:1.4rem; font-weight:600; color:#7a4e31; font-family: 'Georgia', serif;">DePan</div>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                        aria-expanded="false" aria-label="Toggle navigation" style="border-color: #d4a574;">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1 ms-4">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
+                            <a class="nav-link fw-semibold" asp-area="" asp-controller="Home" asp-action="Index" style="color:#5a3d2a; transition: color 0.3s, border-bottom 0.3s; padding-bottom: 0.5rem; border-bottom: 2px solid transparent;" onmouseover="this.style.color='#8b5e3c'; this.style.borderBottomColor='#d4a574'" onmouseout="this.style.color='#5a3d2a'; this.style.borderBottomColor='transparent'">
+                                <i class="fas fa-home me-1"></i> Inicio
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Productos" asp-action="Index">Productos</a>
+                            <a class="nav-link fw-semibold" asp-controller="Productos" asp-action="Index" style="color:#5a3d2a; transition: color 0.3s, border-bottom 0.3s; padding-bottom: 0.5rem; border-bottom: 2px solid transparent;" onmouseover="this.style.color='#8b5e3c'; this.style.borderBottomColor='#d4a574'" onmouseout="this.style.color='#5a3d2a'; this.style.borderBottomColor='transparent'">
+                                <i class="fas fa-shopping-basket me-1"></i> Productos
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
+                            <a class="nav-link fw-semibold" asp-area="" asp-controller="Home" asp-action="QuienesSomos" style="color:#5a3d2a; transition: color 0.3s, border-bottom 0.3s; padding-bottom: 0.5rem; border-bottom: 2px solid transparent;" onmouseover="this.style.color='#8b5e3c'; this.style.borderBottomColor='#d4a574'" onmouseout="this.style.color='#5a3d2a'; this.style.borderBottomColor='transparent'">
+                                <i class="fas fa-users me-1"></i> Quiénes Somos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" asp-area="" asp-controller="Home" asp-action="Privacy" style="color:#5a3d2a; transition: color 0.3s, border-bottom 0.3s; padding-bottom: 0.5rem; border-bottom: 2px solid transparent;" onmouseover="this.style.color='#8b5e3c'; this.style.borderBottomColor='#d4a574'" onmouseout="this.style.color='#5a3d2a'; this.style.borderBottomColor='transparent'">
+                                <i class="fas fa-shield-alt me-1"></i> Privacidad
+                            </a>
                         </li>
                     </ul>
                     <ul class="navbar-nav">
                         @if (Context.Request.Cookies["jwt"] != null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark position-relative" asp-controller="Carrito" asp-action="Index">
+                                <a class="nav-link position-relative fw-semibold" asp-controller="Carrito" asp-action="Index" style="color:#5a3d2a; transition: color 0.3s;" onmouseover="this.style.color='#8b5e3c'" onmouseout="this.style.color='#5a3d2a'">
                                     <i class="fas fa-shopping-cart"></i> Carrito
-                                    <span class="contador-carrito badge bg-primary rounded-pill">0</span>
+                                    <span class="contador-carrito badge rounded-pill" style="background-color:#8b5e3c;">0</span>
                                     <span class="badge-notificacion position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" style="display:none;">
                                         <i class="fas fa-exclamation" style="font-size: 8px;"></i>
                                         <span class="visually-hidden">Alerta de expiración</span>
@@ -49,39 +57,51 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Pedidos" asp-action="MisPedidos">Mis Pedidos</a>
+                                <a class="nav-link fw-semibold" asp-controller="Pedidos" asp-action="MisPedidos" style="color:#5a3d2a; transition: color 0.3s;" onmouseover="this.style.color='#8b5e3c'" onmouseout="this.style.color='#5a3d2a'">
+                                    <i class="fas fa-receipt me-1"></i> Mis Pedidos
+                                </a>
                             </li>
                             
                             @if (User.IsInRole("Administrador") || User.IsInRole("administrador"))
                             {
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link text-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Administración
+                                    <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:#5a3d2a; transition: color 0.3s;" onmouseover="this.style.color='#8b5e3c'" onmouseout="this.style.color='#5a3d2a'">
+                                        <i class="fas fa-cog me-1"></i> Administración
                                     </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" asp-controller="Productos" asp-action="Admin">Productos</a></li>
-                                        <li><a class="dropdown-item" asp-controller="Pedidos" asp-action="Admin">Pedidos</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" asp-controller="Reportes" asp-action="Index">
-                                            <i class="fas fa-chart-line"></i> Reportes
+                                    <ul class="dropdown-menu" style="border-color: #d4a574; box-shadow: 0 4px 8px rgba(122, 78, 49, 0.15);">
+                                        <li><a class="dropdown-item" asp-controller="Productos" asp-action="Admin" style="color:#5a3d2a; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#faf8f5'" onmouseout="this.style.backgroundColor='transparent'">
+                                            <i class="fas fa-box me-2"></i> Productos
+                                        </a></li>
+                                        <li><a class="dropdown-item" asp-controller="Pedidos" asp-action="Admin" style="color:#5a3d2a; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#faf8f5'" onmouseout="this.style.backgroundColor='transparent'">
+                                            <i class="fas fa-clipboard-list me-2"></i> Pedidos
+                                        </a></li>
+                                        <li><hr class="dropdown-divider" style="border-color: #d4a574;"></li>
+                                        <li><a class="dropdown-item" asp-controller="Reportes" asp-action="Index" style="color:#5a3d2a; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#faf8f5'" onmouseout="this.style.backgroundColor='transparent'">
+                                            <i class="fas fa-chart-line me-2"></i> Reportes
                                         </a></li>
                                     </ul>
                                 </li>
                             }
                             
-                            <li class="nav-item">
+                            <li class="nav-item d-flex align-items-center ms-2">
                                 <form asp-controller="Auth" asp-action="Logout" method="post">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar Sesión</button>
+                                    <button type="submit" class="btn btn-sm" style="background-color:#d4a574; color:#5a3d2a; font-weight:600; border:none; transition: background-color 0.3s, transform 0.2s;" onmouseover="this.style.backgroundColor='#c4955f'; this.style.transform='translateY(-2px)'" onmouseout="this.style.backgroundColor='#d4a574'; this.style.transform='translateY(0)'">
+                                        <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+                                    </button>
                                 </form>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">Iniciar Sesión</a>
+                                <a class="nav-link fw-semibold" asp-controller="Auth" asp-action="Login" style="color:#5a3d2a; transition: color 0.3s;" onmouseover="this.style.color='#8b5e3c'" onmouseout="this.style.color='#5a3d2a'">
+                                    <i class="fas fa-sign-in-alt me-1"></i> Iniciar Sesión
+                                </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="btn btn-primary btn-sm" asp-controller="Auth" asp-action="Register">Registrarse</a>
+                            <li class="nav-item ms-2">
+                                <a class="btn btn-sm" asp-controller="Auth" asp-action="Register" style="background-color:#8b5e3c; color:#ffffff; font-weight:600; border:none; transition: background-color 0.3s, transform 0.2s;" onmouseover="this.style.backgroundColor='#7a4e31'; this.style.transform='translateY(-2px)'" onmouseout="this.style.backgroundColor='#8b5e3c'; this.style.transform='translateY(0)'">
+                                    <i class="fas fa-user-plus me-1"></i> Registrarse
+                                </a>
                             </li>
                         }
                     </ul>
@@ -95,9 +115,107 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer mt-5" style="background: linear-gradient(135deg, #8b5e3c 0%, #7a4e31 50%, #6b4423 100%); color: #f5f5dc; padding: 3rem 0 1.5rem 0; border-top: 4px solid #d4a574;">
         <div class="container">
-            &copy; 2025 - DePan - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
+            <div class="row g-4">
+                <!-- Columna 1: Sobre Nosotros -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="~/images/logo-pan.svg" alt="Logo DePan" style="width:50px; height:25px; margin-right: 10px; filter: brightness(1.2);">
+                        <h5 class="mb-0" style="color: #f5deb3; font-weight: bold;">DePan</h5>
+                    </div>
+                    <p style="font-size: 0.9rem; line-height: 1.6; color: #f5f5dc;">
+                        Panadería artesanal con tradición familiar. Elaboramos nuestros productos con ingredientes de primera calidad, manteniendo las recetas de siempre.
+                    </p>
+                    <div class="mt-3">
+                        <a href="#" class="text-decoration-none me-3" style="color: #f5deb3; font-size: 1.3rem;" title="Facebook">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#" class="text-decoration-none me-3" style="color: #f5deb3; font-size: 1.3rem;" title="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://maps.app.goo.gl/CxrmEmCV39SVjwks5" target="_blank" class="text-decoration-none" style="color: #f5deb3; font-size: 1.3rem;" title="Google Maps">
+                            <i class="fab fa-google"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Columna 2: Enlaces Rápidos -->
+                <div class="col-lg-2 col-md-6">
+                    <h6 style="color: #f5deb3; font-weight: bold; margin-bottom: 1rem; border-bottom: 2px solid #d4a574; padding-bottom: 0.5rem;">Enlaces</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a asp-controller="Home" asp-action="Index" class="text-decoration-none" style="color: #f5f5dc; transition: color 0.3s;" onmouseover="this.style.color='#f5deb3'" onmouseout="this.style.color='#f5f5dc'">
+                                <i class="fas fa-home me-2"></i>Inicio
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a asp-controller="Productos" asp-action="Index" class="text-decoration-none" style="color: #f5f5dc; transition: color 0.3s;" onmouseover="this.style.color='#f5deb3'" onmouseout="this.style.color='#f5f5dc'">
+                                <i class="fas fa-shopping-basket me-2"></i>Productos
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a asp-controller="Home" asp-action="QuienesSomos" class="text-decoration-none" style="color: #f5f5dc; transition: color 0.3s;" onmouseover="this.style.color='#f5deb3'" onmouseout="this.style.color='#f5f5dc'">
+                                <i class="fas fa-users me-2"></i>Quiénes Somos
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a asp-controller="Home" asp-action="Privacy" class="text-decoration-none" style="color: #f5f5dc; transition: color 0.3s;" onmouseover="this.style.color='#f5deb3'" onmouseout="this.style.color='#f5f5dc'">
+                                <i class="fas fa-shield-alt me-2"></i>Privacidad
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Columna 3: Contacto -->
+                <div class="col-lg-3 col-md-6">
+                    <h6 style="color: #f5deb3; font-weight: bold; margin-bottom: 1rem; border-bottom: 2px solid #d4a574; padding-bottom: 0.5rem;">Contacto</h6>
+                    <ul class="list-unstyled" style="font-size: 0.9rem;">
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt me-2" style="color: #f5deb3;"></i>
+                            <span>Lugar Montalvo 3, 18<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;36979 Sanxenxo, Pontevedra</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-phone me-2" style="color: #f5deb3;"></i>
+                            <a href="tel:+34986724498" class="text-decoration-none" style="color: #f5f5dc;">986 724 498</a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-envelope me-2" style="color: #f5deb3;"></i>
+                            <a href="mailto:info@depan.com" class="text-decoration-none" style="color: #f5f5dc;">info@depan.com</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Columna 4: Horario -->
+                <div class="col-lg-3 col-md-6">
+                    <h6 style="color: #f5deb3; font-weight: bold; margin-bottom: 1rem; border-bottom: 2px solid #d4a574; padding-bottom: 0.5rem;">Horario</h6>
+                    <ul class="list-unstyled" style="font-size: 0.9rem;">
+                        <li class="mb-2">
+                            <i class="fas fa-clock me-2" style="color: #f5deb3;"></i>
+                            <strong>Lunes - Viernes</strong>
+                        </li>
+                        <li class="mb-2 ms-4">7:00 - 14:00 | 17:00 - 20:00</li>
+                        <li class="mb-2">
+                            <i class="fas fa-clock me-2" style="color: #f5deb3;"></i>
+                            <strong>Sábados</strong>
+                        </li>
+                        <li class="mb-2 ms-4">7:00 - 14:00</li>
+                        <li class="mb-2">
+                            <i class="fas fa-times-circle me-2" style="color: #d4a574;"></i>
+                            <strong>Domingos</strong>
+                        </li>
+                        <li class="ms-4">Cerrado</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <hr style="border-color: #d4a574; margin: 2rem 0 1rem 0;">
+            <div class="text-center" style="font-size: 0.85rem; color: #d4a574;">
+                <p class="mb-0">
+                    &copy; 2025 DePan - Panadería Artesanal. Todos los derechos reservados.
+                </p>
+            </div>
         </div>
     </footer>
 

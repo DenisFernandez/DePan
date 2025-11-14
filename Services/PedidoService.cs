@@ -59,6 +59,7 @@ namespace DePan.Services
                     {
                         IdPedido = pedido.IdPedido,
                         IdProducto = lineaCarrito.IdProducto,
+                        NombreProducto = lineaCarrito.IdProductoNavigation.Nombre,
                         Cantidad = lineaCarrito.Cantidad,
                         PrecioUnitario = lineaCarrito.PrecioUnitario,
                         Subtotal = lineaCarrito.Subtotal
@@ -75,7 +76,14 @@ namespace DePan.Services
                 carrito.FechaActualizacion = DateTime.Now;
 
                 await _context.SaveChangesAsync();
-                return pedido;
+
+                // Recargar el pedido con todas las relaciones necesarias para el correo
+                var pedidoCompleto = await _context.Pedidos
+                    .Include(p => p.LineaPedidos)
+                    .Include(p => p.IdUsuarioClienteNavigation)
+                    .FirstOrDefaultAsync(p => p.IdPedido == pedido.IdPedido);
+
+                return pedidoCompleto;
             }
             catch
             {
@@ -111,6 +119,7 @@ namespace DePan.Services
             return await _context.Pedidos
                 .Include(p => p.LineaPedidos)
                 .ThenInclude(lp => lp.IdProductoNavigation)
+                .ThenInclude(prod => prod.IdCategoriaNavigation)
                 .Include(p => p.IdUsuarioClienteNavigation)
                 .Include(p => p.IdRepartidorNavigation)
                 .FirstOrDefaultAsync(p => p.IdPedido == pedidoId);

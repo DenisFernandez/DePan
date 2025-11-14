@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 60" width="120" height="60">
+  <!-- Barra de pan estilo dibujado a mano -->
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="3" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5"/>
+    </filter>
+  </defs>
+  
+  <!-- Cuerpo principal de la barra -->
+  <ellipse cx="60" cy="30" rx="55" ry="20" 
+           fill="#d4a574" 
+           stroke="#8b5e3c" 
+           stroke-width="2"
+           filter="url(#rough)"/>
+  
+  <!-- Sombra inferior -->
+  <ellipse cx="60" cy="35" rx="50" ry="15" 
+           fill="#c4955f" 
+           opacity="0.6"/>
+  
+  <!-- Líneas de cortes diagonales -->
+  <path d="M 25 25 Q 25 28 25 32" 
+        stroke="#8b5e3c" 
+        stroke-width="2.5" 
+        fill="none" 
+        stroke-linecap="round"/>
+  
+  <path d="M 40 20 Q 40 24 40 30" 
+        stroke="#8b5e3c" 
+        stroke-width="2.5" 
+        fill="none" 
+        stroke-linecap="round"/>
+  
+  <path d="M 55 18 Q 55 23 55 30" 
+        stroke="#8b5e3c" 
+        stroke-width="2.5" 
+        fill="none" 
+        stroke-linecap="round"/>
+  
+  <path d="M 70 18 Q 70 23 70 30" 
+        stroke="#8b5e3c" 
+        stroke-width="2.5" 
+        fill="none" 
+        stroke-linecap="round"/>
+  
+  <path d="M 85 20 Q 85 24 85 30" 
+        stroke="#8b5e3c" 
+        stroke-width="2.5" 
+        fill="none" 
+        stroke-linecap="round"/>
+  
+  <path d="M 100 25 Q 100 28 100 32" 
+        stroke="#8b5e3c" 
+        stroke-width="2.5" 
+        fill="none" 
+        stroke-linecap="round"/>
+  
+  <!-- Textura de puntos (semillas/decoración) -->
+  <circle cx="30" cy="28" r="1.5" fill="#8b5e3c"/>
+  <circle cx="48" cy="25" r="1.5" fill="#8b5e3c"/>
+  <circle cx="62" cy="24" r="1.5" fill="#8b5e3c"/>
+  <circle cx="78" cy="26" r="1.5" fill="#8b5e3c"/>
+  <circle cx="92" cy="29" r="1.5" fill="#8b5e3c"/>
+  
+  <!-- Borde superior más claro -->
+  <ellipse cx="60" cy="25" rx="48" ry="15" 
+           fill="#e8c18f" 
+           opacity="0.5"/>
+</svg>

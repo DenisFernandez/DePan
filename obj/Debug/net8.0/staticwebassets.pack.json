@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "D:\\Denis\\Escritorio\\Denis TFG\\DePan\\wwwroot\\images\\logo-pan.svg",
+      "PackagePath": "staticwebassets\\images\\logo-pan.svg"
+    },
+    {
       "Id": "D:\\Denis\\Escritorio\\Denis TFG\\DePan\\wwwroot\\images\\placeholder.txt",
       "PackagePath": "staticwebassets\\images\\placeholder.txt"
     },
