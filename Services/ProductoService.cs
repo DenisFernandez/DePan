@@ -18,7 +18,6 @@ namespace DePan.Services
         {
             return await _context.Productos
                 .Include(p => p.IdCategoriaNavigation) // Incluir la categoría
-                .Where(p => p.Disponible == true)
                 .OrderBy(p => p.Nombre)
                 .ToListAsync();
         }
@@ -28,7 +27,7 @@ namespace DePan.Services
         {
             return await _context.Productos
                 .Include(p => p.IdCategoriaNavigation)
-                .Where(p => p.IdCategoria == categoriaId && p.Disponible == true)
+                .Where(p => p.IdCategoria == categoriaId)
                 .OrderBy(p => p.Nombre)
                 .ToListAsync();
         }
@@ -38,8 +37,7 @@ namespace DePan.Services
         {
             return await _context.Productos
                 .Include(p => p.IdCategoriaNavigation)
-                .Where(p => p.Disponible == true && 
-                           (p.Nombre.Contains(searchTerm) || 
+                .Where(p => (p.Nombre.Contains(searchTerm) || 
                             (p.Descripcion != null && p.Descripcion.Contains(searchTerm))))
                 .OrderBy(p => p.Nombre)
                 .ToListAsync();
@@ -50,7 +48,7 @@ namespace DePan.Services
         {
             return await _context.Productos
                 .Include(p => p.IdCategoriaNavigation)
-                .FirstOrDefaultAsync(p => p.IdProducto == id && p.Disponible == true);
+                .FirstOrDefaultAsync(p => p.IdProducto == id);
         }
 
         // Crear nuevo producto
@@ -88,16 +86,30 @@ namespace DePan.Services
             }
         }
 
-        // Eliminar producto (soft delete)
+        // Eliminar producto (hard delete)
         public async Task<bool> DeleteProductoAsync(int id)
         {
             try
             {
-                var producto = await _context.Productos.FindAsync(id);
+                var producto = await _context.Productos
+                    .Include(p => p.LineaCarritos)
+                    .Include(p => p.LineaPedidos)
+                    .Include(p => p.Valoracions)
+                    .FirstOrDefaultAsync(p => p.IdProducto == id);
+                
                 if (producto != null)
                 {
-                    producto.Disponible = false;
-                    producto.FechaActualizacion = DateTime.Now;
+                    // Eliminar líneas de carrito asociadas
+                    _context.LineaCarritos.RemoveRange(producto.LineaCarritos);
+                    
+                    // Eliminar líneas de pedido asociadas
+                    _context.LineaPedidos.RemoveRange(producto.LineaPedidos);
+                    
+                    // Eliminar valoraciones asociadas
+                    _context.Valoracions.RemoveRange(producto.Valoracions);
+                    
+                    // Eliminar el producto
+                    _context.Productos.Remove(producto);
                     await _context.SaveChangesAsync();
                     return true;
                 }

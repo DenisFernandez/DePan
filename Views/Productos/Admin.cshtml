@@ -7,7 +7,12 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Administración de Productos</h1>
-        <a href="@Url.Action("Create")" class="btn btn-success">Nuevo Producto</a>
+        <div>
+            <button class="btn btn-info me-2" id="btnFixDisponible" onclick="fixDisponible()">
+                Actualizar Disponibles
+            </button>
+            <a href="@Url.Action("Create")" class="btn btn-success">Nuevo Producto</a>
+        </div>
     </div>
 
     <div class="table-responsive">
@@ -46,6 +51,7 @@
                             <div class="btn-group" role="group">
                                 <a href="@Url.Action("Edit", new { id = producto.IdProducto })" class="btn btn-warning btn-sm">Editar</a>
                                 <form asp-action="Delete" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
                                     <input type="hidden" name="id" value="@producto.IdProducto" />
                                     <button type="submit" class="btn btn-danger btn-sm" 
                                             onclick="return confirm('¿Estás seguro de que quieres eliminar este producto?')">
@@ -69,3 +75,34 @@
         </div>
     }
 </div>
+
+<script>
+async function fixDisponible() {
+    const btn = document.getElementById('btnFixDisponible');
+    btn.disabled = true;
+    btn.textContent = 'Actualizando...';
+    
+    try {
+        const response = await fetch('/api/mantenimiento/fix-disponible', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            alert('✓ ' + data.message);
+            location.reload();
+        } else {
+            const error = await response.json();
+            alert('✗ Error: ' + error.error);
+        }
+    } catch (error) {
+        alert('✗ Error: ' + error.message);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Actualizar Disponibles';
+    }
+}
+</script>

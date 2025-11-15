@@ -163,6 +163,11 @@ namespace DePan.Services
                     if (producto != null)
                     {
                         producto.Stock += linea.Cantidad;
+                        // Marcar como disponible si se restauró stock
+                        if (producto.Stock > 0)
+                        {
+                            producto.Disponible = true;
+                        }
                     }
 
                     _context.LineaCarritos.Remove(linea);
