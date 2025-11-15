@@ -150,7 +150,7 @@ Semana 6 (05/11/2025 - 11/11/2025)
           Añadida validación de datos antes de procesar: Verifica que request no sea null,  que PedidoId sea válido, que NuevoEstado no esté vacío.
           Eliminado el token antiforgery innecesario.
           
-Periodo Final de Entrega (11/11/2025 - 14/11/2025)
+Periodo Final de Entrega (11/11/2025 - 15/11/2025)
 
      ✅ Cambios en la estética para el header y el footer, añadí iconos, efectos hover al pasar por encima de los encabezados, footer con enlaces al resto de las vistas.
 
@@ -165,7 +165,20 @@ Periodo Final de Entrega (11/11/2025 - 14/11/2025)
      ✅ Corregido un problema a la hora de enviar emails: directamente no se enviaba el correo, investigué preguntándole a la IA y es porque necesitaba tener activada la verificación en 2 pasos desde la cuenta de correo (gmail en este caso) desde la que quiero enviar los correos.
 
      ✅ Añadido feedback para usuario no registrados/loggeados, de manera que si intentan acceder a su carrito o meter productos en el, se les informe de que deben estar loggeados para hacerlo y les reenvia directamente a la vista de registrase / iniciar sesión.
+
+     ✅ Corregido un error que no actualizaba el estado del producto correctamente en el catálogo ni en los detalles del producto, cuando el usuario compraba la última unidad del stock de ese producto no dejaba comprar más (funcionamiento correcto), pero seguía apareciendo la etiqueta verde como si el producto siguiese disponible, cree una función que verificase el stock después de que el usuario presionase el botón de añadir al carrito.
+
+     ✅ Corregido una funcionalidad: cuando el usuario añade productos desde "Detalles del pedido" antes si añadía 3 por ejemplo, el contador de selección de productos se mantenía en 3, ahora automáticamente cree una función que actualiza ese contador cada vez que se le da al botón de añadir al carrito para que bajase a 1 de nuevo.
+
+     ✅ Añadí un botón de añadir directamente al carrito desde el catálogo de productos, para usuarios habituales que no necesitan entrar en detalles de cada producto.
+
+     ✅ Modifiqué la gráfica de evolución temporal de ventas para que solamente mostrase el mes actual y los pedidos realizados por día. De esta manera el usuario administrador puede anticipar el impacto en el stock por diferentes días del mes de un vistazo a la gráfica.
+
+     ✅ Añadí tooltips explicativos a las 4 secciones dentro de el apartado de reportes avanzados.
      
+     ✅ Añadí verificación de campos en la vista de confirmar pedido, para que el campo de teléfono sean exactamente 9 dígitos, el campo de código postal 5 dígitos, el campo de dirección y ciudad obligatorios.
+     
+    
 
 # Clonar el repositorio
 git clone https://github.com/DenisFernandez/DePan.git
