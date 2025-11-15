@@ -48,6 +48,45 @@ namespace DePan.Controllers
             });
         }
 
+        // GET: /Reportes/GetVentasMesActual
+        [HttpGet]
+        public async Task<IActionResult> GetVentasMesActual()
+        {
+            var hoy = DateTime.Now;
+            var inicioMes = new DateTime(hoy.Year, hoy.Month, 1);
+            var finMes = hoy;
+
+            var ventasPorDia = await _context.Pedidos
+                .Where(p => p.FechaPedido >= inicioMes && p.FechaPedido <= finMes && p.Estado != "cancelado")
+                .GroupBy(p => p.FechaPedido.Date)
+                .Select(g => new
+                {
+                    Fecha = g.Key,
+                    TotalVentas = g.Sum(p => p.Total),
+                    NumPedidos = g.Count()
+                })
+                .OrderBy(x => x.Fecha)
+                .ToListAsync();
+
+            // Si no hay datos, devolver array vacío pero con estructura correcta
+            if (!ventasPorDia.Any())
+            {
+                return Json(new
+                {
+                    labels = new List<string>(),
+                    ventas = new List<decimal>(),
+                    pedidos = new List<int>()
+                });
+            }
+
+            return Json(new
+            {
+                labels = ventasPorDia.Select(v => v.Fecha.ToString("dd/MM")).ToList(),
+                ventas = ventasPorDia.Select(v => v.TotalVentas).ToList(),
+                pedidos = ventasPorDia.Select(v => v.NumPedidos).ToList()
+            });
+        }
+
         // GET: /Reportes/GetProductosMasVendidos
         [HttpGet]
         public async Task<IActionResult> GetProductosMasVendidos(int top = 10)
@@ -81,13 +120,37 @@ namespace DePan.Controllers
             var inicioMes = new DateTime(hoy.Year, hoy.Month, 1);
             var inicioAnio = new DateTime(hoy.Year, 1, 1);
 
+            // Datos de clientes
+            var clientes = await _context.Usuarios
+                .Where(u => u.Rol == "cliente")
+                .Select(u => u.Email)
+                .ToListAsync();
+
+            // Datos de productos bajo stock
+            var productosBajoStock = await _context.Productos
+                .Where(p => p.Stock < 10)
+                .Select(p => new { p.Nombre, p.Stock })
+                .ToListAsync();
+
+            // Datos de pedidos del mes
+            var pedidosMes = await _context.Pedidos
+                .Where(p => p.FechaPedido >= inicioMes && p.Estado != "cancelado")
+                .Include(p => p.IdUsuarioClienteNavigation)
+                .Select(p => new { 
+                    NumeroPedido = p.NumeroPedido,
+                    Cliente = p.IdUsuarioClienteNavigation.Nombre + " " + p.IdUsuarioClienteNavigation.Apellidos,
+                    Fecha = p.FechaPedido,
+                    Total = p.Total
+                })
+                .ToListAsync();
+
             var stats = new
             {
-                TotalClientes = await _context.Usuarios.CountAsync(),
+                TotalClientes = await _context.Usuarios.Where(u => u.Rol == "cliente").CountAsync(),
+                ClientesEmails = clientes,
                 TotalPedidos = await _context.Pedidos.CountAsync(),
-                PedidosMes = await _context.Pedidos
-                    .Where(p => p.FechaPedido >= inicioMes)
-                    .CountAsync(),
+                PedidosMes = pedidosMes.Count(),
+                PedidosDetalles = pedidosMes,
                 VentasMes = await _context.Pedidos
                     .Where(p => p.FechaPedido >= inicioMes && p.Estado != "cancelado")
                     .SumAsync(p => (decimal?)p.Total) ?? 0,
@@ -97,9 +160,8 @@ namespace DePan.Controllers
                 ProductosActivos = await _context.Productos
                     .Where(p => p.Disponible == true)
                     .CountAsync(),
-                ProductosBajoStock = await _context.Productos
-                    .Where(p => p.Stock < 10)
-                    .CountAsync()
+                ProductosBajoStock = productosBajoStock.Count(),
+                ProductosBajoStockDetalles = productosBajoStock
             };
 
             return Json(stats);

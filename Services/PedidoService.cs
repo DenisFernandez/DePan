@@ -130,10 +130,16 @@ namespace DePan.Services
         {
             try
             {
-                var pedido = await _context.Pedidos.FindAsync(pedidoId);
+                var pedido = await _context.Pedidos
+                    .Include(p => p.LineaPedidos)
+                    .ThenInclude(lp => lp.IdProductoNavigation)
+                    .FirstOrDefaultAsync(p => p.IdPedido == pedidoId);
+                
                 if (pedido != null)
                 {
+                    var estadoAnterior = pedido.Estado;
                     pedido.Estado = nuevoEstado;
+                    
                     if (idRepartidor.HasValue)
                     {
                         pedido.IdRepartidor = idRepartidor.Value;
@@ -143,6 +149,19 @@ namespace DePan.Services
                     if (nuevoEstado.ToLower() == "entregado")
                     {
                         pedido.FechaEntregaReal = DateTime.Now;
+                    }
+
+                    // Si se cancela un pedido, restaurar el stock
+                    if (nuevoEstado.ToLower() == "cancelado" && estadoAnterior.ToLower() != "cancelado")
+                    {
+                        foreach (var lineaPedido in pedido.LineaPedidos)
+                        {
+                            var producto = lineaPedido.IdProductoNavigation;
+                            if (producto != null)
+                            {
+                                producto.Stock += lineaPedido.Cantidad;
+                            }
+                        }
                     }
 
                     await _context.SaveChangesAsync();

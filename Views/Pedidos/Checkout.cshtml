@@ -31,21 +31,27 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label asp-for="CiudadEntrega" class="form-label">Ciudad *</label>
-                                <input asp-for="CiudadEntrega" class="form-control" />
+                                <input asp-for="CiudadEntrega" class="form-control" placeholder="Ej: Madrid" />
                                 <span asp-validation-for="CiudadEntrega" class="text-danger"></span>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label asp-for="CodigoPostalEntrega" class="form-label">Código Postal *</label>
-                                <input asp-for="CodigoPostalEntrega" class="form-control" />
+                                <label asp-for="CodigoPostalEntrega" class="form-label">Código Postal * <small class="text-muted">(5 dígitos)</small></label>
+                                <input asp-for="CodigoPostalEntrega" class="form-control" placeholder="Ej: 28001" 
+                                       pattern="^\d{5}$" title="El código postal debe tener exactamente 5 dígitos"
+                                       required />
                                 <span asp-validation-for="CodigoPostalEntrega" class="text-danger"></span>
+                                <small class="text-muted d-block mt-1">Formato: 5 dígitos numéricos</small>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label asp-for="TelefonoContacto" class="form-label">Teléfono de Contacto *</label>
-                                <input asp-for="TelefonoContacto" class="form-control" />
+                                <label asp-for="TelefonoContacto" class="form-label">Teléfono de Contacto * <small class="text-muted">(9 dígitos)</small></label>
+                                <input asp-for="TelefonoContacto" class="form-control" placeholder="Ej: 612345678" 
+                                       pattern="^\d{9}$" title="El teléfono debe tener exactamente 9 dígitos"
+                                       required />
                                 <span asp-validation-for="TelefonoContacto" class="text-danger"></span>
+                                <small class="text-muted d-block mt-1">Formato: 9 dígitos numéricos</small>
                             </div>
                         </div>
 
@@ -125,6 +131,42 @@
     <script>
         document.getElementById('formCheckout').addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            // Obtener valores de los campos usando los atributos name
+            const codigoPostal = document.querySelector('input[name="CodigoPostalEntrega"]').value.trim();
+            const telefono = document.querySelector('input[name="TelefonoContacto"]').value.trim();
+            const ciudad = document.querySelector('input[name="CiudadEntrega"]').value.trim();
+            const direccion = document.querySelector('input[name="DireccionEntrega"]').value.trim();
+            
+            // Validar Código Postal (5 dígitos numéricos)
+            if (!/^\d{5}$/.test(codigoPostal)) {
+                mostrarMensaje('El código postal debe contener exactamente 5 dígitos numéricos. Ej: 28001', 'warning');
+                return;
+            }
+            
+            // Validar Teléfono (9 dígitos numéricos)
+            if (!/^\d{9}$/.test(telefono)) {
+                mostrarMensaje('El teléfono debe contener exactamente 9 dígitos numéricos. Ej: 612345678', 'warning');
+                return;
+            }
+            
+            // Validar que no haya números en la ciudad
+            if (/\d/.test(ciudad)) {
+                mostrarMensaje('La ciudad no puede contener números', 'warning');
+                return;
+            }
+            
+            // Validar que la ciudad no esté vacía
+            if (ciudad.length === 0) {
+                mostrarMensaje('Por favor, ingresa una ciudad válida', 'warning');
+                return;
+            }
+            
+            // Validar que la dirección no esté vacía
+            if (direccion.length === 0) {
+                mostrarMensaje('Por favor, ingresa una dirección válida', 'warning');
+                return;
+            }
             
             // Validar términos
             if (!document.getElementById('aceptoTerminos').checked) {
@@ -227,5 +269,31 @@
                 }, 5000);
             }
         }
+        
+        // Validación en tiempo real para Código Postal
+        document.querySelector('input[name="CodigoPostalEntrega"]').addEventListener('input', function(e) {
+            // Permitir solo números
+            this.value = this.value.replace(/[^\d]/g, '');
+            // Limitar a 5 caracteres
+            if (this.value.length > 5) {
+                this.value = this.value.slice(0, 5);
+            }
+        });
+        
+        // Validación en tiempo real para Teléfono
+        document.querySelector('input[name="TelefonoContacto"]').addEventListener('input', function(e) {
+            // Permitir solo números
+            this.value = this.value.replace(/[^\d]/g, '');
+            // Limitar a 9 caracteres
+            if (this.value.length > 9) {
+                this.value = this.value.slice(0, 9);
+            }
+        });
+        
+        // Validación en tiempo real para Ciudad
+        document.querySelector('input[name="CiudadEntrega"]').addEventListener('input', function(e) {
+            // Eliminar números
+            this.value = this.value.replace(/\d/g, '');
+        });
     </script>
 }

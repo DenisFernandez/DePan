@@ -2,6 +2,57 @@
     ViewData["Title"] = "Panel de Reportes";
 }
 
+<style>
+    .card-stat {
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .card-stat:hover {
+        transform: translateY(-5px);
+    }
+
+    .reportes-popover {
+        position: fixed;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 9999;
+        min-width: 250px;
+        max-width: 400px;
+        padding: 12px;
+        animation: slideDown 0.2s ease-out;
+    }
+
+    .popover-title {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 8px;
+        border-bottom: 2px solid #8b5e3c;
+        padding-bottom: 8px;
+    }
+
+    .popover-content {
+        font-size: 14px;
+        color: #555;
+        line-height: 1.6;
+        max-height: 120px;
+        overflow: hidden;
+    }
+
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-12">
@@ -28,8 +79,8 @@
     <!-- Estadísticas Generales -->
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card text-white bg-primary">
-                <div class="card-body">
+            <div class="card text-white bg-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Haz hover para ver detalles">
+                <div class="card-body card-stat" id="card-clientes">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="card-title mb-0">Total Clientes</h6>
@@ -41,8 +92,8 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-success">
-                <div class="card-body">
+            <div class="card text-white bg-success" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Haz hover para ver detalles">
+                <div class="card-body card-stat" id="card-ventas">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="card-title mb-0">Ventas del Mes</h6>
@@ -54,8 +105,8 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-info">
-                <div class="card-body">
+            <div class="card text-white bg-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Haz hover para ver detalles">
+                <div class="card-body card-stat" id="card-pedidos">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="card-title mb-0">Pedidos del Mes</h6>
@@ -67,8 +118,8 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-warning">
-                <div class="card-body">
+            <div class="card text-white bg-warning" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Haz hover para ver detalles">
+                <div class="card-body card-stat" id="card-bajo-stock">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="card-title mb-0">Bajo Stock</h6>
@@ -87,11 +138,11 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title mb-0">
-                        <i class="fas fa-chart-area"></i> Evolución de Ventas (Últimos 6 Meses)
+                        <i class="fas fa-chart-area"></i> Evolución de Ventas (Mes Actual)
                     </h5>
                 </div>
-                <div class="card-body">
-                    <canvas id="chartVentasMensuales" height="80"></canvas>
+                <div class="card-body" style="position: relative; height: 400px; min-height: 400px;">
+                    <canvas id="chartVentasMensuales"></canvas>
                 </div>
             </div>
         </div>
@@ -199,7 +250,96 @@
             setInterval(function() {
                 actualizarTodosDatos();
             }, 60000);
+            
+            // Inicializar tooltips
+            inicializarPopovers();
         });
+
+        // Función para inicializar popovers
+        let popoverActual = null;
+
+        function inicializarPopovers() {
+            // Total Clientes - Muestra emails
+            document.getElementById('card-clientes')?.addEventListener('mouseenter', function() {
+                const contenido = datosEstadisticas.clientesEmails.slice(0, 5);
+                mostrarPopover(this, 'Correos de Clientes', contenido);
+            });
+
+            document.getElementById('card-clientes')?.addEventListener('mouseleave', function() {
+                cerrarPopover();
+            });
+
+            // Ventas del Mes - Muestra pedidos con detalles
+            document.getElementById('card-ventas')?.addEventListener('mouseenter', function() {
+                const contenido = datosEstadisticas.pedidosDetalles.slice(0, 5)
+                    .map(p => `${p.cliente}: ${p.total.toFixed(2)}€`);
+                mostrarPopover(this, 'Pedidos del Mes', contenido);
+            });
+
+            document.getElementById('card-ventas')?.addEventListener('mouseleave', function() {
+                cerrarPopover();
+            });
+
+            // Pedidos del Mes - Muestra clientes y pedidos
+            document.getElementById('card-pedidos')?.addEventListener('mouseenter', function() {
+                const contenido = datosEstadisticas.pedidosDetalles.slice(0, 5)
+                    .map(p => `${p.cliente}: Pedido #${p.numeroPedido}`);
+                mostrarPopover(this, 'Detalles de Pedidos', contenido);
+            });
+
+            document.getElementById('card-pedidos')?.addEventListener('mouseleave', function() {
+                cerrarPopover();
+            });
+
+            // Bajo Stock - Muestra productos
+            document.getElementById('card-bajo-stock')?.addEventListener('mouseenter', function() {
+                const contenido = datosEstadisticas.productosBajoStockDetalles.slice(0, 5)
+                    .map(p => `${p.nombre}: ${p.stock} uds`);
+                mostrarPopover(this, 'Productos Bajo Stock', contenido);
+            });
+
+            document.getElementById('card-bajo-stock')?.addEventListener('mouseleave', function() {
+                cerrarPopover();
+            });
+        }
+
+        // Función para mostrar popover
+        function mostrarPopover(element, titulo, contenido) {
+            // Remover popover anterior si existe
+            cerrarPopover();
+
+            const popover = document.createElement('div');
+            popover.className = 'reportes-popover';
+            
+            const contenidoHTML = Array.isArray(contenido) 
+                ? contenido.join('<br>')
+                : contenido;
+            
+            popover.innerHTML = `
+                <div class="popover-title">${titulo}</div>
+                <div class="popover-content">
+                    ${contenidoHTML}
+                </div>
+            `;
+
+            document.body.appendChild(popover);
+            popoverActual = popover;
+
+            // Posicionar el popover
+            const rect = element.getBoundingClientRect();
+            popover.style.left = (rect.left + rect.width / 2 - popover.offsetWidth / 2) + 'px';
+            popover.style.top = (rect.bottom + 10) + 'px';
+        }
+
+        // Función para cerrar el popover
+        function cerrarPopover() {
+            if (popoverActual) {
+                popoverActual.remove();
+                popoverActual = null;
+            }
+        }
+
+        let datosEstadisticas = {};
 
         // Función para actualizar todos los datos
         function actualizarTodosDatos() {
@@ -241,6 +381,9 @@
                 const response = await fetch('@Url.Action("GetEstadisticasGenerales", "Reportes")');
                 const data = await response.json();
                 
+                // Guardar datos para los popovers
+                datosEstadisticas = data;
+                
                 document.getElementById('stat-clientes').textContent = data.totalClientes;
                 document.getElementById('stat-ventas-mes').textContent = new Intl.NumberFormat('es-ES', { 
                     style: 'currency', 
@@ -248,6 +391,9 @@
                 }).format(data.ventasMes);
                 document.getElementById('stat-pedidos-mes').textContent = data.pedidosMes;
                 document.getElementById('stat-bajo-stock').textContent = data.productosBajoStock;
+                
+                // Reinicializar popovers después de actualizar datos
+                inicializarPopovers();
             } catch (error) {
                 console.error('Error cargando estadísticas generales:', error);
             }
@@ -256,8 +402,16 @@
         // Gráfico de Ventas Mensuales
         async function cargarGraficoVentasMensuales() {
             try {
-                const response = await fetch('@Url.Action("GetVentasPorMes", "Reportes")');
+                const response = await fetch('@Url.Action("GetVentasMesActual", "Reportes")');
                 const data = await response.json();
+                
+                // Si no hay datos, mostrar mensaje
+                if (!data.labels || data.labels.length === 0) {
+                    const ctx = document.getElementById('chartVentasMensuales');
+                    ctx.style.display = 'none';
+                    ctx.parentElement.innerHTML = '<div class="alert alert-info"><i class="fas fa-info-circle"></i> Sin datos disponibles para el mes actual</div>';
+                    return;
+                }
                 
                 const ctx = document.getElementById('chartVentasMensuales').getContext('2d');
                 chartVentas = new Chart(ctx, {
@@ -270,6 +424,7 @@
                                 data: data.ventas,
                                 borderColor: colors.primary,
                                 backgroundColor: 'rgba(139, 94, 60, 0.1)',
+                                borderWidth: 2,
                                 tension: 0.4,
                                 fill: true,
                                 yAxisID: 'y'
@@ -279,6 +434,7 @@
                                 data: data.pedidos,
                                 borderColor: colors.success,
                                 backgroundColor: 'rgba(176, 114, 63, 0.1)',
+                                borderWidth: 2,
                                 tension: 0.4,
                                 fill: true,
                                 yAxisID: 'y1'
@@ -287,6 +443,7 @@
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: false,
                         interaction: {
                             mode: 'index',
                             intersect: false,
@@ -295,6 +452,9 @@
                             legend: {
                                 display: true,
                                 position: 'top'
+                            },
+                            filler: {
+                                propagate: true
                             }
                         },
                         scales: {
@@ -305,7 +465,8 @@
                                 title: {
                                     display: true,
                                     text: 'Ventas (€)'
-                                }
+                                },
+                                beginAtZero: true
                             },
                             y1: {
                                 type: 'linear',
@@ -317,13 +478,18 @@
                                 },
                                 grid: {
                                     drawOnChartArea: false
-                                }
+                                },
+                                beginAtZero: true
                             }
                         }
                     }
                 });
             } catch (error) {
                 console.error('Error cargando gráfico de ventas mensuales:', error);
+                const ctx = document.getElementById('chartVentasMensuales');
+                if (ctx) {
+                    ctx.parentElement.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Error al cargar el gráfico</div>';
+                }
             }
         }
 

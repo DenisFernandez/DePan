@@ -41,7 +41,7 @@
             <div class="col-md-3">
                 <div class="card text-white bg-info">
                     <div class="card-body">
-                        <h5 class="card-title">@estadisticas.IngresosTotales.ToString("C")</h5>
+                        <h5 class="card-title" data-ingresos-totales>@estadisticas.IngresosTotales.ToString("C")</h5>
                         <p class="card-text">Ingresos Totales</p>
                     </div>
                 </div>
@@ -86,7 +86,7 @@
                     <tbody>
                         @foreach (var pedido in Model)
                         {
-                            <tr>
+                            <tr data-pedido-id="@pedido.IdPedido">
                                 <td>@pedido.NumeroPedido</td>
                                 <td>
                                     @pedido.IdUsuarioClienteNavigation?.Nombre @pedido.IdUsuarioClienteNavigation?.Apellidos
@@ -95,7 +95,7 @@
                                 </td>
                                 <td>@pedido.FechaPedido.ToString("dd/MM/yyyy HH:mm")</td>
                                 <td>@pedido.Total.ToString("C")</td>
-                                <td>
+                                <td data-estado>
                                     <span class="badge @GetEstadoBadgeClass(pedido.Estado)">@pedido.Estado</span>
                                 </td>
                                 <td>
@@ -140,6 +140,17 @@
 
 @section Scripts {
     <script>
+        function getColorEstado(estado) {
+            const colores = {
+                'pendiente': 'warning',
+                'preparando': 'info',
+                'enviado': 'secondary',
+                'entregado': 'success',
+                'cancelado': 'danger'
+            };
+            return colores[estado.toLowerCase()] || 'secondary';
+        }
+
         async function cambiarEstado(pedidoId, nuevoEstado) {
             if (!confirm(`¿Cambiar estado del pedido a "${nuevoEstado}"?`)) {
                 return;
@@ -164,8 +175,29 @@
                 const result = await response.json();
                 
                 if (result.success) {
+                    // Actualizar los ingresos totales en la UI sin recargar
+                    if (result.ingresosTotales !== undefined) {
+                        const ingresoCard = document.querySelector('[data-ingresos-totales]');
+                        if (ingresoCard) {
+                            const formatted = new Intl.NumberFormat('es-ES', { 
+                                style: 'currency', 
+                                currency: 'EUR' 
+                            }).format(result.ingresosTotales);
+                            ingresoCard.textContent = formatted;
+                        }
+                    }
+                    
+                    // Actualizar la fila de la tabla del pedido
+                    const pedidoRow = document.querySelector(`tr[data-pedido-id="${pedidoId}"]`);
+                    if (pedidoRow) {
+                        const estadoCell = pedidoRow.querySelector('[data-estado]');
+                        if (estadoCell) {
+                            // Actualizar el estado en la tabla
+                            estadoCell.innerHTML = `<span class="badge bg-${getColorEstado(nuevoEstado)}">${nuevoEstado}</span>`;
+                        }
+                    }
+                    
                     alert('Estado actualizado correctamente');
-                    location.reload();
                 } else {
                     alert('Error: ' + result.message);
                 }

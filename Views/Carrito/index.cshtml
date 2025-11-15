@@ -45,7 +45,7 @@
                     <div class="card-body">
                         @foreach (var linea in Model.LineaCarritos)
                         {
-                            <div class="row align-items-center mb-3 pb-3 border-bottom">
+                            <div class="row align-items-center mb-3 pb-3 border-bottom" data-linea-id="@linea.IdLineaCarrito" data-precio-unitario="@linea.PrecioUnitario">
                                 <div class="col-md-2">
                                     <img src="@(linea.IdProductoNavigation.ImagenUrl ?? "/images/placeholder.jpg")" 
                                          class="img-fluid rounded" 
@@ -61,21 +61,23 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div class="input-group input-group-sm">
-                                        <button class="btn btn-outline-secondary" 
-                                                onclick="actualizarCantidad(@linea.IdLineaCarrito, @(linea.Cantidad - 1))">-</button>
+                                        <button class="btn btn-outline-secondary btn-menos" 
+                                                onclick="manejarCambiarCantidad(@linea.IdLineaCarrito, -1)">-</button>
                                         <input type="number" class="form-control text-center" 
                                                value="@linea.Cantidad" 
                                                id="cantidad-@linea.IdLineaCarrito" 
+                                               data-cantidad-original="@linea.Cantidad"
                                                min="1"
-                                               onchange="actualizarCantidad(@linea.IdLineaCarrito, this.value)">
-                                        <button class="btn btn-outline-secondary" 
-                                                onclick="actualizarCantidad(@linea.IdLineaCarrito, @(linea.Cantidad + 1))">+</button>
+                                               max="@linea.Cantidad"
+                                               onchange="manejarCambiarCantidad(@linea.IdLineaCarrito, this.value)">
+                                        <button class="btn btn-outline-secondary btn-mas" 
+                                                onclick="manejarCambiarCantidad(@linea.IdLineaCarrito, 1)">+</button>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
-                                    <p class="mb-0 fw-bold">@linea.Subtotal.ToString("C")</p>
+                                    <p class="mb-0 fw-bold" id="subtotal-@linea.IdLineaCarrito">@linea.Subtotal.ToString("C")</p>
                                     <button class="btn btn-danger btn-sm mt-1" 
-                                            onclick="eliminarProducto(@linea.IdLineaCarrito)">
+                                            onclick="eliminarProducto(@linea.IdLineaCarrito); return false;">
                                         <i class="fas fa-trash"></i> Eliminar
                                     </button>
                                 </div>
@@ -210,52 +212,128 @@
             @:}, 3000);
         }
 
-        async function actualizarCantidad(lineaCarritoId, nuevaCantidad) {
-            if (nuevaCantidad < 1) return;
+        // Wrapper sincrónico para los botones +/-
+        function manejarCambiarCantidad(lineaCarritoId, cambio) {
+            cambiarCantidad(lineaCarritoId, cambio);
+            return false;
+        }
+
+        async function cambiarCantidad(lineaCarritoId, cambio) {
+            const inputElement = document.getElementById(`cantidad-${lineaCarritoId}`);
+            const cantidadOriginal = parseInt(inputElement.getAttribute('data-cantidad-original'));
+            const cantidadActual = parseInt(inputElement.value);
+            let nuevaCantidad;
+
+            console.log('cambio:', cambio, 'tipo:', typeof cambio, 'cantidadActual:', cantidadActual);
+
+            if (typeof cambio === 'string' && cambio.match(/^\d+$/)) {
+                // Si es un valor directo del onchange (string numérico)
+                nuevaCantidad = parseInt(cambio);
+            } else if (typeof cambio === 'number') {
+                // Si es un incremento/decremento (+1 o -1)
+                nuevaCantidad = cantidadActual + cambio;
+            } else {
+                return;
+            }
+
+            console.log('nuevaCantidad calculada:', nuevaCantidad, 'cantidadOriginal:', cantidadOriginal);
+
+            // Validar los límites
+            if (nuevaCantidad < 1) {
+                nuevaCantidad = 1;
+                inputElement.value = 1;
+                return;
+            }
+
+            if (nuevaCantidad > cantidadOriginal) {
+                nuevaCantidad = cantidadOriginal;
+                inputElement.value = cantidadOriginal;
+                return;
+            }
+
+            // Actualizar el DOM sin recargar
+            inputElement.value = nuevaCantidad;
+            await actualizarCantidadProducto(lineaCarritoId, nuevaCantidad);
+        }
+
+        async function actualizarCantidadProducto(lineaCarritoId, nuevaCantidad) {
+            const cantidadFinal = parseInt(nuevaCantidad);
+            console.log('Enviando:', { lineaCarritoId, cantidad: cantidadFinal });
             
             try {
+                const payload = JSON.stringify({ 
+                    lineaCarritoId: parseInt(lineaCarritoId), 
+                    cantidad: cantidadFinal 
+                });
+                console.log('Payload JSON:', payload);
+                
                 const response = await fetch('@Url.Action("ActualizarCantidad", "Carrito")', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
                     },
-                    body: JSON.stringify({ lineaCarritoId, cantidad: parseInt(nuevaCantidad) })
+                    body: payload
                 });
 
                 const result = await response.json();
+                console.log('Respuesta completa:', result);
                 
                 if (result.success) {
-                    // Recargar la página para ver los cambios
-                    location.reload();
+                    // Actualizar el subtotal en el DOM sin recargar
+                    const filaDiv = document.querySelector(`[data-linea-id="${lineaCarritoId}"]`);
+                    if (filaDiv) {
+                        const precioUnitario = parseFloat(filaDiv.getAttribute('data-precio-unitario')) || 0;
+                        const nuevoSubtotal = (cantidadFinal * precioUnitario).toFixed(2);
+                        const subtotalElement = document.getElementById(`subtotal-${lineaCarritoId}`);
+                        if (subtotalElement) {
+                            subtotalElement.textContent = `${nuevoSubtotal}€`;
+                        }
+                    }
                 } else {
                     alert('Error: ' + result.message);
+                    // Revertir el valor en el input
+                    location.reload();
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error en fetch:', error);
                 alert('Error al actualizar la cantidad');
+                location.reload();
             }
         }
 
         async function eliminarProducto(lineaCarritoId) {
             if (!confirm('¿Estás seguro de que quieres eliminar este producto del carrito?')) {
-                return;
+                return false;
             }
 
             try {
+                const payload = JSON.stringify({ 
+                    lineaCarritoId: parseInt(lineaCarritoId)
+                });
+                
                 const response = await fetch('@Url.Action("Eliminar", "Carrito")', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
                     },
-                    body: JSON.stringify({ lineaCarritoId })
+                    body: payload
                 });
 
                 const result = await response.json();
+                console.log('Resultado eliminación:', result);
                 
                 if (result.success) {
-                    location.reload();
+                    // Eliminar la fila del DOM sin recargar
+                    const filaDiv = document.querySelector(`[data-linea-id="${lineaCarritoId}"]`);
+                    if (filaDiv) {
+                        filaDiv.remove();
+                    }
+                    // Recargar después de 500ms para actualizar totales
+                    setTimeout(() => {
+                        location.reload();
+                    }, 500);
                 } else {
                     alert('Error: ' + result.message);
                 }
@@ -263,6 +341,7 @@
                 console.error('Error:', error);
                 alert('Error al eliminar el producto');
             }
+            return false;
         }
 
         async function vaciarCarrito() {

@@ -65,6 +65,16 @@
                             </p>
                             <div class="d-grid gap-2">
                                 <a href="@Url.Action("Details", new { id = producto.IdProducto })" class="btn btn-primary">Ver Detalles</a>
+                                @if (producto.Disponible == true && producto.Stock > 0)
+                                {
+                                    <button type="button" class="btn btn-success btn-agregar-carrito" 
+                                            data-id="@producto.IdProducto" 
+                                            data-nombre="@producto.Nombre"
+                                            data-precio="@producto.Precio"
+                                            data-stock="@producto.Stock">
+                                        <i class="fas fa-shopping-cart"></i> Agregar al Carrito
+                                    </button>
+                                }
                             </div>
                         </div>
                     </div>
@@ -81,3 +91,139 @@
         </div>
     }
 </div>
+
+<!-- Modal para agregar al carrito -->
+<div class="modal fade" id="modalAgregarCarrito" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitulo">Agregar al Carrito</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="cantidadProducto" class="form-label">Cantidad:</label>
+                    <div class="input-group">
+                        <button type="button" class="btn btn-outline-secondary" id="btnMenos">-</button>
+                        <input type="number" id="cantidadProducto" class="form-control text-center" value="1" min="1">
+                        <button type="button" class="btn btn-outline-secondary" id="btnMas">+</button>
+                    </div>
+                    <small class="text-muted d-block mt-2">Stock disponible: <span id="stockDisponible">0</span></small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="btnConfirmarCarrito">
+                    <i class="fas fa-check"></i> Agregar al Carrito
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let productoSeleccionado = {
+        id: null,
+        nombre: null,
+        stock: 0
+    };
+
+    // Evento para los botones "Agregar al Carrito"
+    document.querySelectorAll('.btn-agregar-carrito').forEach(btn => {
+        btn.addEventListener('click', function() {
+            productoSeleccionado.id = this.getAttribute('data-id');
+            productoSeleccionado.nombre = this.getAttribute('data-nombre');
+            productoSeleccionado.stock = parseInt(this.getAttribute('data-stock')) || 0;
+            
+            // Resetear cantidad a 1
+            document.getElementById('cantidadProducto').value = 1;
+            document.getElementById('cantidadProducto').max = productoSeleccionado.stock;
+            document.getElementById('stockDisponible').textContent = productoSeleccionado.stock;
+            document.getElementById('modalTitulo').textContent = `Agregar "${productoSeleccionado.nombre}" al Carrito`;
+            
+            // Mostrar modal
+            new bootstrap.Modal(document.getElementById('modalAgregarCarrito')).show();
+        });
+    });
+
+    // Botones +/-
+    document.getElementById('btnMenos').addEventListener('click', function() {
+        const input = document.getElementById('cantidadProducto');
+        if (parseInt(input.value) > 1) {
+            input.value = parseInt(input.value) - 1;
+        }
+    });
+
+    document.getElementById('btnMas').addEventListener('click', function() {
+        const input = document.getElementById('cantidadProducto');
+        if (parseInt(input.value) < productoSeleccionado.stock) {
+            input.value = parseInt(input.value) + 1;
+        }
+    });
+
+    // Validar input directo
+    document.getElementById('cantidadProducto').addEventListener('change', function() {
+        let valor = parseInt(this.value) || 1;
+        if (valor < 1) valor = 1;
+        if (valor > productoSeleccionado.stock) valor = productoSeleccionado.stock;
+        this.value = valor;
+    });
+
+    // Confirmar agregar al carrito
+    document.getElementById('btnConfirmarCarrito').addEventListener('click', async function() {
+        const cantidad = parseInt(document.getElementById('cantidadProducto').value);
+        
+        // Log para debugging
+        console.log('Enviando:', {
+            productoId: productoSeleccionado.id,
+            cantidad: cantidad
+        });
+        
+        try {
+            const response = await fetch('@Url.Action("Agregar", "Carrito")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    productoId: productoSeleccionado.id,
+                    cantidad: cantidad
+                })
+            });
+
+            const result = await response.json();
+            
+            // Log de respuesta
+            console.log('Respuesta:', result);
+
+            if (result.success) {
+                // Cerrar modal
+                bootstrap.Modal.getInstance(document.getElementById('modalAgregarCarrito')).hide();
+                
+                // Mostrar alerta de éxito
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+                alertDiv.style.zIndex = '9999';
+                alertDiv.innerHTML = `
+                    <i class="fas fa-check-circle"></i> ¡Producto agregado al carrito!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                document.body.appendChild(alertDiv);
+                
+                // Auto-cerrar después de 3 segundos
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 3000);
+            } else if (result.requiresLogin) {
+                // Redirigir a login con mensaje
+                alert('Debes iniciar sesión para agregar productos al carrito');
+                window.location.href = '@Url.Action("Login", "Auth")?returnUrl=@Url.Action("Index", "Productos")';
+            } else {
+                alert('Error: ' + (result.message || 'No se pudo agregar el producto'));
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al agregar el producto al carrito');
+        }
+    });
+</script>

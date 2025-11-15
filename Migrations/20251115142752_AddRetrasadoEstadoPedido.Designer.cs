@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DePan.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251114101322_AddTiempoEntregaEstimadoToPedido")]
-    partial class AddTiempoEntregaEstimadoToPedido
+    [Migration("20251115142752_AddRetrasadoEstadoPedido")]
+    partial class AddRetrasadoEstadoPedido
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -233,7 +233,7 @@ namespace DePan.Migrations
                     b.Property<string>("Estado")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("enum('pendiente','preparando','enviado','entregado','cancelado')")
+                        .HasColumnType("enum('pendiente','preparando','enviado','entregado','retrasado','cancelado')")
                         .HasColumnName("estado")
                         .HasDefaultValueSql("'pendiente'");
 
@@ -284,9 +284,6 @@ namespace DePan.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)")
                         .HasColumnName("telefono_contacto");
-
-                    b.Property<int?>("TiempoEntregaEstimadoMinutos")
-                        .HasColumnType("int");
 
                     b.Property<decimal>("Total")
                         .HasPrecision(10, 2)

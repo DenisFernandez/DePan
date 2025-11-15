@@ -80,6 +80,12 @@ namespace DePan.Services
                 // Decrement product stock and persist
                 producto.Stock -= cantidad;
                 if (producto.Stock < 0) producto.Stock = 0;
+                
+                // Cambiar estado a no disponible si el stock llega a 0
+                if (producto.Stock == 0)
+                {
+                    producto.Disponible = false;
+                }
 
                 // Actualizar total del carrito y fecha
                 await ActualizarTotalCarritoAsync(carrito.IdCarrito);

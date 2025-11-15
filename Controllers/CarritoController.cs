@@ -6,7 +6,26 @@ using System.Security.Claims;
 
 namespace DePan.Controllers
 {
-    [Authorize]
+    // DTO para agregar al carrito
+    public class AgregarAlCarritoRequest
+    {
+        public int productoId { get; set; }
+        public int cantidad { get; set; }
+    }
+
+    // DTO para eliminar línea de carrito
+    public class EliminarLineaCarritoRequest
+    {
+        public int lineaCarritoId { get; set; }
+    }
+
+    // DTO para actualizar cantidad
+    public class ActualizarCantidadRequest
+    {
+        public int lineaCarritoId { get; set; }
+        public int cantidad { get; set; }
+    }
+
     public class CarritoController : Controller
     {
         private readonly CarritoService _carritoService;
@@ -18,9 +37,22 @@ namespace DePan.Controllers
             _productoService = productoService;
         }
 
+        // Método helper para verificar autenticación
+        private bool VerificarAutenticacion()
+        {
+            return User?.Identity?.IsAuthenticated ?? false;
+        }
+
         // GET: /Carrito
         public async Task<IActionResult> Index()
         {
+            // Verificar si el usuario está autenticado
+            if (!VerificarAutenticacion())
+            {
+                TempData["MensajeError"] = "Debes iniciar sesión para acceder a tu carrito.";
+                return RedirectToAction("Login", "Auth");
+            }
+
             var usuarioId = GetUsuarioId();
             var carrito = await _carritoService.GetCarritoUsuarioAsync(usuarioId);
             
@@ -82,70 +114,32 @@ namespace DePan.Controllers
 
         // POST: /Carrito/Agregar
         [HttpPost]
-        public async Task<IActionResult> Agregar([FromBody] object body = null)
+        public async Task<IActionResult> Agregar([FromBody] AgregarAlCarritoRequest request)
         {
-            // Try to bind JSON body first (usual for fetch with application/json)
-            int productoId = 0;
-            int cantidad = 1;
-
-            try
+            // Verificar si el usuario está autenticado
+            if (!VerificarAutenticacion())
             {
-                if (body != null)
-                {
-                    // Attempt to read common JSON shape: { productoId: x, cantidad: y }
-                    // Use System.Text.Json via a simple dynamic parse
-                    var json = System.Text.Json.JsonSerializer.Serialize(body);
-                    using var doc = System.Text.Json.JsonDocument.Parse(json);
-                    var root = doc.RootElement;
-                    if (root.TryGetProperty("productoId", out var pIdProp) && pIdProp.TryGetInt32(out var pId))
-                    {
-                        productoId = pId;
-                    }
-                    if (root.TryGetProperty("cantidad", out var cantidadProp) && cantidadProp.TryGetInt32(out var c))
-                    {
-                        cantidad = c;
-                    }
-                }
-            }
-            catch
-            {
-                // Ignore JSON parse errors and fallback below
-                productoId = 0;
-                cantidad = 1;
+                return Json(new { 
+                    success = false, 
+                    message = "Debes iniciar sesión para agregar productos al carrito",
+                    requiresLogin = true
+                });
             }
 
-            // Fallback: if productoId still 0, try form or querystring (for non-JSON posts)
-            if (productoId == 0)
+            // Validar que los parámetros no sean nulos o inválidos
+            if (request == null || request.productoId <= 0)
             {
-                if (Request.HasFormContentType)
-                {
-                    var form = Request.Form;
-                    if (form.ContainsKey("productoId") && int.TryParse(form["productoId"], out var fPid))
-                    {
-                        productoId = fPid;
-                    }
-
-                    if (form.ContainsKey("cantidad") && int.TryParse(form["cantidad"], out var fCant))
-                    {
-                        cantidad = fCant;
-                    }
-                }
-                else if (Request.Query.ContainsKey("productoId") && int.TryParse(Request.Query["productoId"], out var qPid))
-                {
-                    productoId = qPid;
-                    if (Request.Query.ContainsKey("cantidad") && int.TryParse(Request.Query["cantidad"], out var qCant))
-                    {
-                        cantidad = qCant;
-                    }
-                }
+                return Json(new { success = false, message = "ID de producto inválido", productoId = request?.productoId ?? 0 });
             }
+
+            int cantidad = request.cantidad > 0 ? request.cantidad : 1;
 
             var usuarioId = GetUsuarioId();
-            var producto = await _productoService.GetProductoByIdAsync(productoId);
+            var producto = await _productoService.GetProductoByIdAsync(request.productoId);
 
             if (producto == null)
             {
-                return Json(new { success = false, message = "Producto no encontrado", productoId });
+                return Json(new { success = false, message = "Producto no encontrado", productoId = request.productoId });
             }
 
             if (producto.Stock < cantidad)
@@ -153,7 +147,7 @@ namespace DePan.Controllers
                 return Json(new { success = false, message = "Stock insuficiente", stock = producto.Stock });
             }
 
-            var result = await _carritoService.AgregarAlCarritoAsync(usuarioId, productoId, cantidad);
+            var result = await _carritoService.AgregarAlCarritoAsync(usuarioId, request.productoId, cantidad);
             
             if (result)
             {
@@ -172,14 +166,14 @@ namespace DePan.Controllers
 
         // POST: /Carrito/ActualizarCantidad
         [HttpPost]
-        public async Task<IActionResult> ActualizarCantidad(int lineaCarritoId, int cantidad)
+        public async Task<IActionResult> ActualizarCantidad([FromBody] ActualizarCantidadRequest request)
         {
-            if (cantidad <= 0)
+            if (request == null || request.cantidad <= 0)
             {
-                return await Eliminar(lineaCarritoId);
+                return Json(new { success = false, message = "La cantidad debe ser mayor a 0" });
             }
 
-            var result = await _carritoService.ActualizarCantidadCarritoAsync(lineaCarritoId, cantidad);
+            var result = await _carritoService.ActualizarCantidadCarritoAsync(request.lineaCarritoId, request.cantidad);
             
             if (result)
             {
@@ -200,9 +194,14 @@ namespace DePan.Controllers
 
         // POST: /Carrito/Eliminar
         [HttpPost]
-        public async Task<IActionResult> Eliminar(int lineaCarritoId)
+        public async Task<IActionResult> Eliminar([FromBody] EliminarLineaCarritoRequest request)
         {
-            var result = await _carritoService.EliminarDelCarritoAsync(lineaCarritoId);
+            if (request == null || request.lineaCarritoId <= 0)
+            {
+                return Json(new { success = false, message = "ID de línea de carrito inválido" });
+            }
+
+            var result = await _carritoService.EliminarDelCarritoAsync(request.lineaCarritoId);
             
             if (result)
             {

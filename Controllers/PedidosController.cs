@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using DePan.Services;
 using DePan.Models;
+using DePan.Data;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace DePan.Controllers
 {
@@ -12,12 +14,14 @@ namespace DePan.Controllers
         private readonly PedidoService _pedidoService;
         private readonly CarritoService _carritoService;
         private readonly EmailService _emailService;
+        private readonly ApplicationDbContext _context;
 
-        public PedidosController(PedidoService pedidoService, CarritoService carritoService, EmailService emailService)
+        public PedidosController(PedidoService pedidoService, CarritoService carritoService, EmailService emailService, ApplicationDbContext context)
         {
             _pedidoService = pedidoService;
             _carritoService = carritoService;
             _emailService = emailService;
+            _context = context;
         }
 
         // GET: /Pedidos/MisPedidos
@@ -167,7 +171,23 @@ namespace DePan.Controllers
             
             if (result)
             {
-                return Json(new { success = true, message = "Estado actualizado correctamente" });
+                // Calcular nuevos ingresos totales
+                var hoy = DateTime.Now;
+                var inicioMes = new DateTime(hoy.Year, hoy.Month, 1);
+                var ventasMes = await _context.Pedidos
+                    .Where(p => p.FechaPedido >= inicioMes && p.Estado != "cancelado")
+                    .SumAsync(p => (decimal?)p.Total) ?? 0;
+
+                var ingresosTotales = await _context.Pedidos
+                    .Where(p => p.Estado != "cancelado")
+                    .SumAsync(p => (decimal?)p.Total) ?? 0;
+
+                return Json(new { 
+                    success = true, 
+                    message = "Estado actualizado correctamente",
+                    ventasMes = ventasMes,
+                    ingresosTotales = ingresosTotales
+                });
             }
 
             return Json(new { success = false, message = "Error al actualizar estado" });
