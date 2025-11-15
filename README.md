@@ -163,6 +163,8 @@ Periodo Final de Entrega (11/11/2025 - 14/11/2025)
      ✅ Añadí que se enviara después de que el usuario realizase un pedido, una confirmación por email de los detalles del mismo. El email al que se envía el correo es el mismo con el que se registra el usuario. Para ello utilicé el servicio EmailService con MailKit 4.14.1 y el protocolo SMTP de gamil con TLS (smtp.gmail.com:587). Paquete NuGet necesario: MailKit 4.14.1 , la integración del servicio de correo se ha hecho en PedidosController.cs
 
      ✅ Corregido un problema a la hora de enviar emails: directamente no se enviaba el correo, investigué preguntándole a la IA y es porque necesitaba tener activada la verificación en 2 pasos desde la cuenta de correo (gmail en este caso) desde la que quiero enviar los correos.
+
+     ✅ Añadido feedback para usuario no registrados/loggeados, de manera que si intentan acceder a su carrito o meter productos en el, se les informe de que deben estar loggeados para hacerlo y les reenvia directamente a la vista de registrase / iniciar sesión.
      
 
 # Clonar el repositorio
